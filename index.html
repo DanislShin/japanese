@@ -1,0 +1,213 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>일본어 히라가나 한글 발음 테스트</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        text-align: center;
+      }
+      .question {
+        margin: 20px 0;
+        font-size: 24px;
+      }
+      .input-box {
+        margin: 10px 0;
+      }
+      input {
+        padding: 5px;
+        font-size: 16px;
+      }
+      button {
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+      #result {
+        margin-top: 20px;
+        font-size: 18px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>일본어 히라가나 한글 발음 테스트</h1>
+    <p>아래 히라가나를 보고 한글 발음을 입력하세요. (예: あ → 아)</p>
+
+    <div id="quiz">
+      <div class="question" id="question"></div>
+      <div class="input-box">
+        <input
+          type="text"
+          id="userAnswer"
+          placeholder="한글 발음을 입력하세요"
+        />
+      </div>
+      <button onclick="checkAnswer()">정답 확인</button>
+    </div>
+
+    <div id="result"></div>
+
+    <script>
+      // 히라가나와 한글 발음 데이터 (첨부된 표 기반, 전체 포함 후 30개로 제한)
+      const fullQuizData = [
+        { hiragana: "あ", answer: "아" },
+        { hiragana: "い", answer: "이" },
+        { hiragana: "う", answer: "우" },
+        { hiragana: "え", answer: "에" },
+        { hiragana: "お", answer: "오" },
+        { hiragana: "か", answer: "카" },
+        { hiragana: "き", answer: "키" },
+        { hiragana: "く", answer: "쿠" },
+        { hiragana: "け", answer: "케" },
+        { hiragana: "こ", answer: "코" },
+        { hiragana: "さ", answer: "사" },
+        { hiragana: "し", answer: "시" },
+        { hiragana: "す", answer: "스" },
+        { hiragana: "せ", answer: "세" },
+        { hiragana: "そ", answer: "소" },
+        { hiragana: "た", answer: "타" },
+        { hiragana: "ち", answer: "치" },
+        { hiragana: "つ", answer: "츠" },
+        { hiragana: "て", answer: "테" },
+        { hiragana: "と", answer: "토" },
+        { hiragana: "な", answer: "나" },
+        { hiragana: "に", answer: "니" },
+        { hiragana: "ぬ", answer: "누" },
+        { hiragana: "ね", answer: "네" },
+        { hiragana: "の", answer: "노" },
+        { hiragana: "は", answer: "하" },
+        { hiragana: "ひ", answer: "히" },
+        { hiragana: "ふ", answer: "후" },
+        { hiragana: "へ", answer: "헤" },
+        { hiragana: "ほ", answer: "호" },
+        { hiragana: "ま", answer: "마" },
+        { hiragana: "み", answer: "미" },
+        { hiragana: "む", answer: "무" },
+        { hiragana: "め", answer: "메" },
+        { hiragana: "も", answer: "모" },
+        { hiragana: "や", answer: "야" },
+        { hiragana: "ゆ", answer: "유" },
+        { hiragana: "よ", answer: "요" },
+        { hiragana: "ら", answer: "라" },
+        { hiragana: "り", answer: "리" },
+        { hiragana: "る", answer: "루" },
+        { hiragana: "れ", answer: "레" },
+        { hiragana: "ろ", answer: "로" },
+        { hiragana: "わ", answer: "와" },
+        { hiragana: "を", answer: "오/워" },
+        { hiragana: "ん", answer: "ㄴ" }
+      ];
+
+      let shuffledQuizData = [];
+      let currentQuestionIndex = 0;
+
+      // 배열 섞기 (Fisher-Yates Shuffle 알고리즘)
+      function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+      }
+
+      // 페이지 로드 시 데이터 섞기 및 30개로 제한
+      function initializeQuiz() {
+        // 전체 데이터 복사 후 섞고 30개만 선택
+        shuffledQuizData = shuffleArray([...fullQuizData]).slice(0, 30);
+        displayQuestion();
+      }
+
+      function displayQuestion() {
+        const questionElement = document.getElementById("question");
+        questionElement.textContent = `문제 ${currentQuestionIndex + 1}: ${
+          shuffledQuizData[currentQuestionIndex].hiragana
+        }`;
+        document.getElementById("userAnswer").value = "";
+        document.getElementById("result").textContent = "";
+      }
+
+      function checkAnswer() {
+        const userAnswer = document.getElementById("userAnswer").value.trim();
+        const correctAnswer = shuffledQuizData[currentQuestionIndex].answer;
+        const resultElement = document.getElementById("result");
+
+        if (userAnswer === correctAnswer) {
+          resultElement.textContent = "정답입니다!";
+          resultElement.style.color = "green";
+        } else {
+          resultElement.textContent = `틀렸습니다. 정답: ${correctAnswer}`;
+          resultElement.style.color = "red";
+        }
+
+        // 다음 문제로 이동 (마지막 문제면 다시 섞고 처음으로)
+        currentQuestionIndex++;
+        if (currentQuestionIndex >= shuffledQuizData.length) {
+          currentQuestionIndex = 0;
+          shuffledQuizData = shuffleArray([...fullQuizData]).slice(0, 30); // 다시 섞고 30개 선택
+        }
+        setTimeout(displayQuestion, 2000); // 2초 후 다음 문제로
+      }
+
+      // Enter 키로 정답 제출
+      document
+        .getElementById("userAnswer")
+        .addEventListener("keypress", function (event) {
+          if (event.key === "Enter") {
+            checkAnswer();
+          }
+        });
+
+      // 퀴즈 시작
+      initializeQuiz();
+    </script>
+  </body>
+</html>
