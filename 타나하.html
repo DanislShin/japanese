@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Day1-B – た・な・は + だ・ば・ぱ / 쉬운 단어 + は & だ 문장</title>
+    <style>
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        line-height: 1.6;
+        padding: 24px;
+        max-width: 900px;
+        margin: 0 auto;
+        background: #fafafa;
+        color: #222;
+      }
+      h1,
+      h2 {
+        margin-top: 1.6em;
+        margin-bottom: 0.6em;
+      }
+      h1 {
+        font-size: 1.8rem;
+      }
+      h2 {
+        font-size: 1.4rem;
+        border-left: 4px solid #ff6b6b;
+        padding-left: 8px;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 8px 0 4px;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 6px 8px;
+        text-align: center;
+        font-size: 0.95rem;
+        vertical-align: middle;
+      }
+      th {
+        background: #f1f3f5;
+      }
+      .kana-cell .jp {
+        font-size: 1.1rem;
+        font-weight: 600;
+        display: block;
+      }
+      .kana-cell .romaji {
+        font-size: 0.8rem;
+        color: #555;
+        display: block;
+        margin-top: 2px;
+      }
+      .word-jp {
+        font-size: 1.05rem;
+        font-weight: 600;
+        display: block;
+      }
+      .word-romaji {
+        font-size: 0.8rem;
+        color: #555;
+        display: block;
+        margin-top: 1px;
+      }
+      .speak-btn {
+        background: #ff6b6b;
+        color: white;
+        border: none;
+        padding: 3px 7px;
+        border-radius: 5px;
+        font-size: 0.8rem;
+        cursor: pointer;
+        margin-left: 4px;
+      }
+      .speak-btn:hover {
+        background: #ff3b3b;
+      }
+      .pill {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 999px;
+        font-size: 0.8rem;
+        margin-left: 4px;
+      }
+      .pill-noun {
+        background: #e3f2fd;
+        color: #1565c0;
+      }
+      .pill-adj {
+        background: #fce4ec;
+        color: #c2185b;
+      }
+      .small {
+        font-size: 0.85rem;
+        color: #666;
+      }
+      .section {
+        background: #fff;
+        border-radius: 12px;
+        padding: 16px 18px;
+        margin-bottom: 18px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+      }
+      .example {
+        margin-bottom: 8px;
+        padding: 8px 10px;
+        border-radius: 8px;
+        background: #f8f9fa;
+      }
+      .example-line {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      .example-jp {
+        font-size: 1.05rem;
+        font-weight: 600;
+      }
+      .example-romaji {
+        font-size: 0.85rem;
+        color: #555;
+      }
+      .example-kr {
+        font-size: 0.85rem;
+        color: #444;
+        margin-top: 2px;
+      }
+      .tag-grammar {
+        background: #fff3cd;
+        color: #8a6d3b;
+      }
+    </style>
+
+    <script>
+      let japaneseVoice = null;
+
+      function loadJapaneseVoice() {
+        const voices = speechSynthesis.getVoices();
+
+        // 일본어 + 여성음 우선 선택
+        japaneseVoice =
+          voices.find(
+            (v) =>
+              v.lang && v.lang.includes("ja") && /female|woman|女/i.test(v.name)
+          ) ||
+          voices.find(
+            (v) => v.lang && v.lang.includes("ja") && v.name.includes("Google")
+          ) ||
+          voices.find((v) => v.lang && v.lang.includes("ja"));
+      }
+
+      window.speechSynthesis.onvoiceschanged = loadJapaneseVoice;
+      window.addEventListener("load", loadJapaneseVoice);
+
+      function speak(text) {
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = "ja-JP";
+        utter.voice = japaneseVoice;
+        utter.rate = 0.65; // A 세팅: 좀 느리게, 또렷하게
+        utter.pitch = 1.25; // 여성톤↑
+        speechSynthesis.speak(utter);
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Day1-B – た・な・は + だ・ば・ぱ / 쉬운 단어 + は & だ 문장</h1>
+    <p class="small">
+      👉 이 페이지는 <b>た행 + な행 + は행</b>과 거기서 나온
+      <b>탁음/반탁음 だ・ば・ぱ</b>를 한 세트로 보고,<br />
+      <b>N5~N4 수준의 쉬운 단어</b> 위주 + <b>조사「は」 + 문장 끝「だ」</b>
+      연습까지 한 번에 가는 구조입니다.
+    </p>
+
+    <!-- 1. 히라가나 15개 -->
+    <div class="section">
+      <h2>1. 오늘 사용할 히라가나 15개 (た・な・は)</h2>
+      <table>
+        <tr>
+          <th>행</th>
+          <th>1</th>
+          <th>2</th>
+          <th>3</th>
+          <th>4</th>
+          <th>5</th>
+        </tr>
+        <tr>
+          <th>た행</th>
+          <td class="kana-cell">
+            <span class="jp">た</span>
+            <span class="romaji">ta</span>
+            <button class="speak-btn" onclick="speak('た')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">ち</span>
+            <span class="romaji">chi</span>
+            <button class="speak-btn" onclick="speak('ち')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">つ</span>
+            <span class="romaji">tsu</span>
+            <button class="speak-btn" onclick="speak('つ')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">て</span>
+            <span class="romaji">te</span>
+            <button class="speak-btn" onclick="speak('て')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">と</span>
+            <span class="romaji">to</span>
+            <button class="speak-btn" onclick="speak('と')">▶</button>
+          </td>
+        </tr>
+        <tr>
+          <th>な행</th>
+          <td class="kana-cell">
+            <span class="jp">な</span>
+            <span class="romaji">na</span>
+            <button class="speak-btn" onclick="speak('な')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">に</span>
+            <span class="romaji">ni</span>
+            <button class="speak-btn" onclick="speak('に')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">ぬ</span>
+            <span class="romaji">nu</span>
+            <button class="speak-btn" onclick="speak('ぬ')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">ね</span>
+            <span class="romaji">ne</span>
+            <button class="speak-btn" onclick="speak('ね')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">の</span>
+            <span class="romaji">no</span>
+            <button class="speak-btn" onclick="speak('の')">▶</button>
+          </td>
+        </tr>
+        <tr>
+          <th>は행</th>
+          <td class="kana-cell">
+            <span class="jp">は</span>
+            <span class="romaji">ha</span>
+            <button class="speak-btn" onclick="speak('は')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">ひ</span>
+            <span class="romaji">hi</span>
+            <button class="speak-btn" onclick="speak('ひ')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">ふ</span>
+            <span class="romaji">fu</span>
+            <button class="speak-btn" onclick="speak('ふ')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">へ</span>
+            <span class="romaji">he</span>
+            <button class="speak-btn" onclick="speak('へ')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">ほ</span>
+            <span class="romaji">ho</span>
+            <button class="speak-btn" onclick="speak('ほ')">▶</button>
+          </td>
+        </tr>
+      </table>
+      <p class="small">
+        👉 이 15글자 안에서 단어를 만들고, 나중에 Day1-A(あかさ)와
+        <b>합쳐서</b> 문장을 더 크게 확장할 예정.
+      </p>
+    </div>
+
+    <!-- 1-1. 탁음/반탁음 확장 -->
+    <div class="section">
+      <h2>1-1. た・は에서 확장된 탁음/반탁음 (だ・ば・ぱ)</h2>
+      <table>
+        <tr>
+          <th>행</th>
+          <th>1</th>
+          <th>2</th>
+          <th>3</th>
+          <th>4</th>
+          <th>5</th>
+        </tr>
+        <tr>
+          <th>だ행<br /><span class="small">(た + ゛)</span></th>
+          <td class="kana-cell">
+            <span class="jp">だ</span>
+            <span class="romaji">da</span>
+            <button class="speak-btn" onclick="speak('だ')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">ぢ</span>
+            <span class="romaji">ji</span>
+            <button class="speak-btn" onclick="speak('ぢ')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">づ</span>
+            <span class="romaji">zu</span>
+            <button class="speak-btn" onclick="speak('づ')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">で</span>
+            <span class="romaji">de</span>
+            <button class="speak-btn" onclick="speak('で')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">ど</span>
+            <span class="romaji">do</span>
+            <button class="speak-btn" onclick="speak('ど')">▶</button>
+          </td>
+        </tr>
+        <tr>
+          <th>ば행<br /><span class="small">(は + ゛)</span></th>
+          <td class="kana-cell">
+            <span class="jp">ば</span>
+            <span class="romaji">ba</span>
+            <button class="speak-btn" onclick="speak('ば')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">び</span>
+            <span class="romaji">bi</span>
+            <button class="speak-btn" onclick="speak('び')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">ぶ</span>
+            <span class="romaji">bu</span>
+            <button class="speak-btn" onclick="speak('ぶ')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">べ</span>
+            <span class="romaji">be</span>
+            <button class="speak-btn" onclick="speak('べ')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">ぼ</span>
+            <span class="romaji">bo</span>
+            <button class="speak-btn" onclick="speak('ぼ')">▶</button>
+          </td>
+        </tr>
+        <tr>
+          <th>ぱ행<br /><span class="small">(は + ゜)</span></th>
+          <td class="kana-cell">
+            <span class="jp">ぱ</span>
+            <span class="romaji">pa</span>
+            <button class="speak-btn" onclick="speak('ぱ')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">ぴ</span>
+            <span class="romaji">pi</span>
+            <button class="speak-btn" onclick="speak('ぴ')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">ぷ</span>
+            <span class="romaji">pu</span>
+            <button class="speak-btn" onclick="speak('ぷ')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">ぺ</span>
+            <span class="romaji">pe</span>
+            <button class="speak-btn" onclick="speak('ぺ')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">ぽ</span>
+            <span class="romaji">po</span>
+            <button class="speak-btn" onclick="speak('ぽ')">▶</button>
+          </td>
+        </tr>
+      </table>
+      <p class="small">
+        👉 실제 단어는 아래에서
+        <b>기본 たなは 단어 + 탁음/반탁음 단어(ぶた / ばね 등)</b>로 같이 연습.
+      </p>
+    </div>
+
+    <!-- 2. 단어 목록 (기본 + 확장 단어) -->
+    <div class="section">
+      <h2>2. た・な・は 세트 단어 (쉬운 단어 위주, N3 이하)</h2>
+      <p class="small">
+        아래 단어들은 <b>た행 + な행 + は행 + 그 탁음/반탁음</b> 안에서 만들 수
+        있는 것 중에서,<br />
+        의미가 직관적인 <b>N5~N4 수준</b> 단어 위주로 골랐습니다. (총 20개)
+      </p>
+
+      <table>
+        <tr>
+          <th>히라가나 + 읽기</th>
+          <th>뜻 (한국어)</th>
+          <th>비고</th>
+          <th>듣기</th>
+        </tr>
+
+        <!-- 기본 세트 (쉬운 단어) -->
+        <tr>
+          <td>
+            <span class="word-jp">たね</span>
+            <span class="word-romaji">tane</span>
+          </td>
+          <td>씨앗</td>
+          <td><span class="pill pill-noun">식물</span></td>
+          <td><button class="speak-btn" onclick="speak('たね')">▶</button></td>
+        </tr>
+
+        <tr>
+          <td>
+            <span class="word-jp">たな</span>
+            <span class="word-romaji">tana</span>
+          </td>
+          <td>선반, 칸막이</td>
+          <td><span class="pill pill-noun">집안</span></td>
+          <td><button class="speak-btn" onclick="speak('たな')">▶</button></td>
+        </tr>
+
+        <tr>
+          <td>
+            <span class="word-jp">なに</span>
+            <span class="word-romaji">nani</span>
+          </td>
+          <td>무엇</td>
+          <td><span class="pill pill-noun">질문</span></td>
+          <td><button class="speak-btn" onclick="speak('なに')">▶</button></td>
+        </tr>
+
+        <tr>
+          <td>
+            <span class="word-jp">なつ</span>
+            <span class="word-romaji">natsu</span>
+          </td>
+          <td>여름</td>
+          <td><span class="pill pill-noun">계절</span></td>
+          <td><button class="speak-btn" onclick="speak('なつ')">▶</button></td>
+        </tr>
+
+        <tr>
+          <td>
+            <span class="word-jp">ぬの</span>
+            <span class="word-romaji">nuno</span>
+          </td>
+          <td>천, 직물</td>
+          <td><span class="pill pill-noun">재질</span></td>
+          <td><button class="speak-btn" onclick="speak('ぬの')">▶</button></td>
+        </tr>
+
+        <tr>
+          <td>
+            <span class="word-jp">のど</span>
+            <span class="word-romaji">nodo</span>
+          </td>
+          <td>목(안), 목구멍</td>
+          <td><span class="pill pill-noun">신체</span></td>
+          <td><button class="speak-btn" onclick="speak('のど')">▶</button></td>
+        </tr>
+
+        <tr>
+          <td>
+            <span class="word-jp">はな</span>
+            <span class="word-romaji">hana</span>
+          </td>
+          <td>꽃 / 코</td>
+          <td><span class="pill pill-noun">자연·신체</span></td>
+          <td><button class="speak-btn" onclick="speak('はな')">▶</button></td>
+        </tr>
+
+        <tr>
+          <td>
+            <span class="word-jp">はは</span>
+            <span class="word-romaji">haha</span>
+          </td>
+          <td>어머니(자기 어머니)</td>
+          <td><span class="pill pill-noun">가족</span></td>
+          <td><button class="speak-btn" onclick="speak('はは')">▶</button></td>
+        </tr>
+
+        <tr>
+          <td>
+            <span class="word-jp">はね</span>
+            <span class="word-romaji">hane</span>
+          </td>
+          <td>날개, 깃털</td>
+          <td><span class="pill pill-noun">동물</span></td>
+          <td><button class="speak-btn" onclick="speak('はね')">▶</button></td>
+        </tr>
+
+        <tr>
+          <td>
+            <span class="word-jp">はた</span>
+            <span class="word-romaji">hata</span>
+          </td>
+          <td>깃발</td>
+          <td><span class="pill pill-noun">물건</span></td>
+          <td><button class="speak-btn" onclick="speak('はた')">▶</button></td>
+        </tr>
+
+        <tr>
+          <td>
+            <span class="word-jp">ひと</span>
+            <span class="word-romaji">hito</span>
+          </td>
+          <td>사람</td>
+          <td><span class="pill pill-noun">인간</span></td>
+          <td><button class="speak-btn" onclick="speak('ひと')">▶</button></td>
+        </tr>
+
+        <tr>
+          <td>
+            <span class="word-jp">ひな</span>
+            <span class="word-romaji">hina</span>
+          </td>
+          <td>병아리, 새끼 새</td>
+          <td><span class="pill pill-noun">동물</span></td>
+          <td><button class="speak-btn" onclick="speak('ひな')">▶</button></td>
+        </tr>
+
+        <tr>
+          <td>
+            <span class="word-jp">ふた</span>
+            <span class="word-romaji">futa</span>
+          </td>
+          <td>뚜껑 / 둘(二, 세는 말)</td>
+          <td><span class="pill pill-noun">물건·수</span></td>
+          <td><button class="speak-btn" onclick="speak('ふた')">▶</button></td>
+        </tr>
+
+        <tr>
+          <td>
+            <span class="word-jp">ふね</span>
+            <span class="word-romaji">fune</span>
+          </td>
+          <td>배, 선박</td>
+          <td><span class="pill pill-noun">교통</span></td>
+          <td><button class="speak-btn" onclick="speak('ふね')">▶</button></td>
+        </tr>
+
+        <tr>
+          <td>
+            <span class="word-jp">へた</span>
+            <span class="word-romaji">heta</span>
+          </td>
+          <td>서투름, 못함</td>
+          <td><span class="pill pill-adj">형용동사(な형)</span></td>
+          <td><button class="speak-btn" onclick="speak('へた')">▶</button></td>
+        </tr>
+
+        <tr>
+          <td>
+            <span class="word-jp">ほし</span>
+            <span class="word-romaji">hoshi</span>
+          </td>
+          <td>별</td>
+          <td><span class="pill pill-noun">자연</span></td>
+          <td><button class="speak-btn" onclick="speak('ほし')">▶</button></td>
+        </tr>
+
+        <tr>
+          <td>
+            <span class="word-jp">ほね</span>
+            <span class="word-romaji">hone</span>
+          </td>
+          <td>뼈</td>
+          <td><span class="pill pill-noun">신체</span></td>
+          <td><button class="speak-btn" onclick="speak('ほね')">▶</button></td>
+        </tr>
+
+        <!-- 탁음/반탁음 단어 -->
+        <tr>
+          <td>
+            <span class="word-jp">ぶた</span>
+            <span class="word-romaji">buta</span>
+          </td>
+          <td>돼지</td>
+          <td><span class="pill pill-noun">동물 / 탁음</span></td>
+          <td><button class="speak-btn" onclick="speak('ぶた')">▶</button></td>
+        </tr>
+
+        <tr>
+          <td>
+            <span class="word-jp">ばね</span>
+            <span class="word-romaji">bane</span>
+          </td>
+          <td>용수철, 스프링</td>
+          <td><span class="pill pill-noun">물건 / 탁음</span></td>
+          <td><button class="speak-btn" onclick="speak('ばね')">▶</button></td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- 3. 조사 「は」 + 문장 끝 「だ」 연습 -->
+    <div class="section">
+      <h2>3. 조사「は」 + 문장 끝「だ」 연습</h2>
+      <p class="small">
+        👉 여기서는 <b>조사「は」</b>(읽기는 <b>wa</b>) 하나만 써서<br />
+        <b>[명사] は [명사/형용동사] だ</b> 패턴을 연습합니다.
+      </p>
+
+      <div class="example">
+        <div class="example-line">
+          <span class="example-jp">はは は ひと だ。</span>
+          <span class="example-romaji">(haha wa hito da.)</span>
+          <button class="speak-btn" onclick="speak('はは は ひと だ')">
+            ▶
+          </button>
+        </div>
+        <div class="example-kr">엄마는 사람이다.</div>
+        <div class="example-kr small">
+          ➜ <b>はは</b>(엄마) + <b>は</b>(조사) + <b>ひと</b>(사람) + <b>だ</b>
+        </div>
+      </div>
+
+      <div class="example">
+        <div class="example-line">
+          <span class="example-jp">たね は はな だ。</span>
+          <span class="example-romaji">(tane wa hana da.)</span>
+          <button class="speak-btn" onclick="speak('たね は はな だ')">
+            ▶
+          </button>
+        </div>
+        <div class="example-kr">씨앗은 꽃이다. (→ 꽃이 될 존재라는 느낌)</div>
+        <div class="example-kr small">
+          ➜ <b>たね</b>(씨앗) + <b>は</b> + <b>はな</b>(꽃) + <b>だ</b>
+        </div>
+      </div>
+
+      <div class="example">
+        <div class="example-line">
+          <span class="example-jp">ぶた は ぶた だ。</span>
+          <span class="example-romaji">(buta wa buta da.)</span>
+          <button class="speak-btn" onclick="speak('ぶた は ぶた だ')">
+            ▶
+          </button>
+        </div>
+        <div class="example-kr">돼지는 돼지다. (강조·구조 연습용)</div>
+        <div class="example-kr small">
+          ➜ <b>ぶた</b>(돼지) + <b>は</b> + <b>ぶた</b>(돼지) + <b>だ</b>
+          <span class="pill tag-grammar">패턴 연습용</span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
