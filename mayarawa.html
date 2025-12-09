@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Day1-C – ま・や・ら・わ・ん / 쉬운 단어 + は & だ 문장</title>
+    <style>
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        line-height: 1.6;
+        padding: 24px;
+        max-width: 900px;
+        margin: 0 auto;
+        background: #fafafa;
+        color: #222;
+      }
+      h1,
+      h2 {
+        margin-top: 1.6em;
+        margin-bottom: 0.6em;
+      }
+      h1 {
+        font-size: 1.8rem;
+      }
+      h2 {
+        font-size: 1.4rem;
+        border-left: 4px solid #ff6b6b;
+        padding-left: 8px;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 8px 0 4px;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 6px 8px;
+        text-align: center;
+        font-size: 0.95rem;
+        vertical-align: middle;
+      }
+      th {
+        background: #f1f3f5;
+      }
+      .kana-cell .jp {
+        font-size: 1.1rem;
+        font-weight: 600;
+        display: block;
+      }
+      .kana-cell .romaji {
+        font-size: 0.8rem;
+        color: #555;
+        display: block;
+        margin-top: 2px;
+      }
+      .word-jp {
+        font-size: 1.05rem;
+        font-weight: 600;
+        display: block;
+      }
+      .word-romaji {
+        font-size: 0.8rem;
+        color: #555;
+        display: block;
+        margin-top: 1px;
+      }
+      .speak-btn {
+        background: #ff6b6b;
+        color: white;
+        border: none;
+        padding: 3px 7px;
+        border-radius: 5px;
+        font-size: 0.8rem;
+        cursor: pointer;
+        margin-left: 4px;
+      }
+      .speak-btn:hover {
+        background: #ff3b3b;
+      }
+      .pill {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 999px;
+        font-size: 0.8rem;
+        margin-left: 4px;
+      }
+      .pill-noun {
+        background: #e3f2fd;
+        color: #1565c0;
+      }
+      .pill-adj {
+        background: #fce4ec;
+        color: #c2185b;
+      }
+      .small {
+        font-size: 0.85rem;
+        color: #666;
+      }
+      .section {
+        background: #fff;
+        border-radius: 12px;
+        padding: 16px 18px;
+        margin-bottom: 18px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+      }
+      .example {
+        margin-bottom: 8px;
+        padding: 8px 10px;
+        border-radius: 8px;
+        background: #f8f9fa;
+      }
+      .example-line {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      .example-jp {
+        font-size: 1.05rem;
+        font-weight: 600;
+      }
+      .example-romaji {
+        font-size: 0.85rem;
+        color: #555;
+      }
+      .example-kr {
+        font-size: 0.85rem;
+        color: #444;
+        margin-top: 2px;
+      }
+      .tag-grammar {
+        background: #fff3cd;
+        color: #8a6d3b;
+      }
+    </style>
+
+    <script>
+      let japaneseVoice = null;
+
+      function loadJapaneseVoice() {
+        const voices = speechSynthesis.getVoices();
+        // 일본어 + 여성음 우선 선택
+        japaneseVoice =
+          voices.find(
+            (v) =>
+              v.lang && v.lang.includes("ja") && /female|woman|女/i.test(v.name)
+          ) ||
+          voices.find(
+            (v) => v.lang && v.lang.includes("ja") && v.name.includes("Google")
+          ) ||
+          voices.find((v) => v.lang && v.lang.includes("ja"));
+      }
+
+      window.speechSynthesis.onvoiceschanged = loadJapaneseVoice;
+      window.addEventListener("load", loadJapaneseVoice);
+
+      function speak(text) {
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = "ja-JP";
+        utter.voice = japaneseVoice;
+        utter.rate = 0.65; // 느리게, 또렷하게
+        utter.pitch = 1.25; // 여성톤↑
+        speechSynthesis.speak(utter);
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Day1-C – ま・や・ら・わ・ん / 쉬운 단어 + は & だ 문장</h1>
+    <p class="small">
+      👉 이 페이지는 새로 배우는 <b>ま행・や행・ら행・わ・ん</b>을 중심으로,<br />
+      <b>N5~N4 정도 쉬운 단어 20개</b> +
+      <b>조사「は」 + 문장 끝「だ」</b> 패턴을 한 번에 보는 구조입니다.<br />
+      (앞에서 이미 배운 あかさたなは랑 같이 쓰는 걸 전제로 함)
+    </p>
+
+    <!-- 1. 히라가나 표 -->
+    <div class="section">
+      <h2>1. 오늘 새로 보는 히라가나 (ま・や・ら・わ・ん)</h2>
+      <table>
+        <tr>
+          <th>행</th>
+          <th>1</th>
+          <th>2</th>
+          <th>3</th>
+          <th>4</th>
+          <th>5</th>
+        </tr>
+        <tr>
+          <th>ま행</th>
+          <td class="kana-cell">
+            <span class="jp">ま</span>
+            <span class="romaji">ma</span>
+            <button class="speak-btn" onclick="speak('ま')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">み</span>
+            <span class="romaji">mi</span>
+            <button class="speak-btn" onclick="speak('み')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">む</span>
+            <span class="romaji">mu</span>
+            <button class="speak-btn" onclick="speak('む')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">め</span>
+            <span class="romaji">me</span>
+            <button class="speak-btn" onclick="speak('め')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">も</span>
+            <span class="romaji">mo</span>
+            <button class="speak-btn" onclick="speak('も')">▶</button>
+          </td>
+        </tr>
+        <tr>
+          <th>や행</th>
+          <td class="kana-cell">
+            <span class="jp">や</span>
+            <span class="romaji">ya</span>
+            <button class="speak-btn" onclick="speak('や')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">　</span>
+            <span class="romaji">-</span>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">ゆ</span>
+            <span class="romaji">yu</span>
+            <button class="speak-btn" onclick="speak('ゆ')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">　</span>
+            <span class="romaji">-</span>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">よ</span>
+            <span class="romaji">yo</span>
+            <button class="speak-btn" onclick="speak('よ')">▶</button>
+          </td>
+        </tr>
+        <tr>
+          <th>ら행</th>
+          <td class="kana-cell">
+            <span class="jp">ら</span>
+            <span class="romaji">ra</span>
+            <button class="speak-btn" onclick="speak('ら')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">り</span>
+            <span class="romaji">ri</span>
+            <button class="speak-btn" onclick="speak('り')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">る</span>
+            <span class="romaji">ru</span>
+            <button class="speak-btn" onclick="speak('る')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">れ</span>
+            <span class="romaji">re</span>
+            <button class="speak-btn" onclick="speak('れ')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">ろ</span>
+            <span class="romaji">ro</span>
+            <button class="speak-btn" onclick="speak('ろ')">▶</button>
+          </td>
+        </tr>
+        <tr>
+          <th>わ · ん</th>
+          <td class="kana-cell">
+            <span class="jp">わ</span>
+            <span class="romaji">wa</span>
+            <button class="speak-btn" onclick="speak('わ')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">を</span>
+            <span class="romaji">wo / o</span>
+            <button class="speak-btn" onclick="speak('を')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">ん</span>
+            <span class="romaji">n</span>
+            <button class="speak-btn" onclick="speak('ん')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">　</span>
+            <span class="romaji">-</span>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">　</span>
+            <span class="romaji">-</span>
+          </td>
+        </tr>
+      </table>
+      <p class="small">
+        👉 실제 단어에서는 이미 배운 <b>あかさたなは</b>도 같이 쓰지만,<br />
+        오늘은 특히 <b>ま・や・ら・わ・ん</b>이 들어간 단어에 눈을 꽂는 느낌으로
+        보면 됨.
+      </p>
+    </div>
+
+    <!-- 2. 단어 목록 (마야라와ん 중심, 쉬운 단어 20개) -->
+    <div class="section">
+      <h2>2. 마·야·라·와·ん 세트 단어 (N5~N4 쉬운 단어 20개)</h2>
+      <p class="small">
+        아래 단어들은 <b>ま・や・ら・わ・ん</b>이 반드시 들어가게 골랐고,<br />
+        전부 <b>N5~N4 정도, 일상에서 자주 나오는 단어</b>로만 구성했습니다.
+        (탁음 / 작은ゃゅょ 없이, 기본형만)
+      </p>
+
+      <table>
+        <tr>
+          <th>히라가나 + 읽기</th>
+          <th>뜻 (한국어)</th>
+          <th>비고</th>
+          <th>듣기</th>
+        </tr>
+
+        <!-- 1 -->
+        <tr>
+          <td>
+            <span class="word-jp">やま</span>
+            <span class="word-romaji">yama</span>
+          </td>
+          <td>산</td>
+          <td><span class="pill pill-noun">자연</span></td>
+          <td><button class="speak-btn" onclick="speak('やま')">▶</button></td>
+        </tr>
+
+        <!-- 2 -->
+        <tr>
+          <td>
+            <span class="word-jp">やさい</span>
+            <span class="word-romaji">yasai</span>
+          </td>
+          <td>야채, 채소</td>
+          <td><span class="pill pill-noun">음식</span></td>
+          <td>
+            <button class="speak-btn" onclick="speak('やさい')">▶</button>
+          </td>
+        </tr>
+
+        <!-- 3 -->
+        <tr>
+          <td>
+            <span class="word-jp">ゆき</span>
+            <span class="word-romaji">yuki</span>
+          </td>
+          <td>눈(雪)</td>
+          <td><span class="pill pill-noun">자연</span></td>
+          <td><button class="speak-btn" onclick="speak('ゆき')">▶</button></td>
+        </tr>
+
+        <!-- 4 -->
+        <tr>
+          <td>
+            <span class="word-jp">よる</span>
+            <span class="word-romaji">yoru</span>
+          </td>
+          <td>밤</td>
+          <td><span class="pill pill-noun">시간</span></td>
+          <td><button class="speak-btn" onclick="speak('よる')">▶</button></td>
+        </tr>
+
+        <!-- 5 -->
+        <tr>
+          <td>
+            <span class="word-jp">まど</span>
+            <span class="word-romaji">mado</span>
+          </td>
+          <td>창문</td>
+          <td><span class="pill pill-noun">집안</span></td>
+          <td><button class="speak-btn" onclick="speak('まど')">▶</button></td>
+        </tr>
+
+        <!-- 6 -->
+        <tr>
+          <td>
+            <span class="word-jp">まち</span>
+            <span class="word-romaji">machi</span>
+          </td>
+          <td>도시, 동네</td>
+          <td><span class="pill pill-noun">장소</span></td>
+          <td><button class="speak-btn" onclick="speak('まち')">▶</button></td>
+        </tr>
+
+        <!-- 7 -->
+        <tr>
+          <td>
+            <span class="word-jp">みせ</span>
+            <span class="word-romaji">mise</span>
+          </td>
+          <td>가게, 상점</td>
+          <td><span class="pill pill-noun">장소</span></td>
+          <td><button class="speak-btn" onclick="speak('みせ')">▶</button></td>
+        </tr>
+
+        <!-- 8 -->
+        <tr>
+          <td>
+            <span class="word-jp">もり</span>
+            <span class="word-romaji">mori</span>
+          </td>
+          <td>숲</td>
+          <td><span class="pill pill-noun">자연</span></td>
+          <td><button class="speak-btn" onclick="speak('もり')">▶</button></td>
+        </tr>
+
+        <!-- 9 -->
+        <tr>
+          <td>
+            <span class="word-jp">はる</span>
+            <span class="word-romaji">haru</span>
+          </td>
+          <td>봄</td>
+          <td><span class="pill pill-noun">계절</span></td>
+          <td><button class="speak-btn" onclick="speak('はる')">▶</button></td>
+        </tr>
+
+        <!-- 10 -->
+        <tr>
+          <td>
+            <span class="word-jp">そら</span>
+            <span class="word-romaji">sora</span>
+          </td>
+          <td>하늘</td>
+          <td><span class="pill pill-noun">자연</span></td>
+          <td><button class="speak-btn" onclick="speak('そら')">▶</button></td>
+        </tr>
+
+        <!-- 11 -->
+        <tr>
+          <td>
+            <span class="word-jp">わたし</span>
+            <span class="word-romaji">watashi</span>
+          </td>
+          <td>나, 저</td>
+          <td><span class="pill pill-noun">인칭</span></td>
+          <td>
+            <button class="speak-btn" onclick="speak('わたし')">▶</button>
+          </td>
+        </tr>
+
+        <!-- 12 -->
+        <tr>
+          <td>
+            <span class="word-jp">わかめ</span>
+            <span class="word-romaji">wakame</span>
+          </td>
+          <td>미역</td>
+          <td><span class="pill pill-noun">음식</span></td>
+          <td>
+            <button class="speak-btn" onclick="speak('わかめ')">▶</button>
+          </td>
+        </tr>
+
+        <!-- 13 -->
+        <tr>
+          <td>
+            <span class="word-jp">わに</span>
+            <span class="word-romaji">wani</span>
+          </td>
+          <td>악어</td>
+          <td><span class="pill pill-noun">동물</span></td>
+          <td><button class="speak-btn" onclick="speak('わに')">▶</button></td>
+        </tr>
+
+        <!-- 14 -->
+        <tr>
+          <td>
+            <span class="word-jp">せんせい</span>
+            <span class="word-romaji">sensei</span>
+          </td>
+          <td>선생님</td>
+          <td><span class="pill pill-noun">직업</span></td>
+          <td>
+            <button class="speak-btn" onclick="speak('せんせい')">▶</button>
+          </td>
+        </tr>
+
+        <!-- 15 -->
+        <tr>
+          <td>
+            <span class="word-jp">てんき</span>
+            <span class="word-romaji">tenki</span>
+          </td>
+          <td>날씨</td>
+          <td><span class="pill pill-noun">자연</span></td>
+          <td>
+            <button class="speak-btn" onclick="speak('てんき')">▶</button>
+          </td>
+        </tr>
+
+        <!-- 16 -->
+        <tr>
+          <td>
+            <span class="word-jp">ほん</span>
+            <span class="word-romaji">hon</span>
+          </td>
+          <td>책</td>
+          <td><span class="pill pill-noun">물건</span></td>
+          <td><button class="speak-btn" onclick="speak('ほん')">▶</button></td>
+        </tr>
+
+        <!-- 17 -->
+        <tr>
+          <td>
+            <span class="word-jp">らいねん</span>
+            <span class="word-romaji">rainen</span>
+          </td>
+          <td>내년</td>
+          <td><span class="pill pill-noun">시간</span></td>
+          <td>
+            <button class="speak-btn" onclick="speak('らいねん')">▶</button>
+          </td>
+        </tr>
+
+        <!-- 18 -->
+        <tr>
+          <td>
+            <span class="word-jp">れい</span>
+            <span class="word-romaji">rei</span>
+          </td>
+          <td>예, 예시</td>
+          <td><span class="pill pill-noun">개념</span></td>
+          <td><button class="speak-btn" onclick="speak('れい')">▶</button></td>
+        </tr>
+
+        <!-- 19 -->
+        <tr>
+          <td>
+            <span class="word-jp">ろく</span>
+            <span class="word-romaji">roku</span>
+          </td>
+          <td>여섯(6)</td>
+          <td><span class="pill pill-noun">숫자</span></td>
+          <td><button class="speak-btn" onclick="speak('ろく')">▶</button></td>
+        </tr>
+
+        <!-- 20 -->
+        <tr>
+          <td>
+            <span class="word-jp">みんな</span>
+            <span class="word-romaji">minna</span>
+          </td>
+          <td>모두, 다들</td>
+          <td><span class="pill pill-noun">인칭</span></td>
+          <td>
+            <button class="speak-btn" onclick="speak('みんな')">▶</button>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- 3. 조사「は」 + 문장 끝「だ」 연습 -->
+    <div class="section">
+      <h2>3. 조사「は」 + 문장 끝「だ」 연습</h2>
+      <p class="small">
+        👉 앞 페이지와 동일하게 <b>조사「は」</b>(읽기는 <b>wa</b>) 하나만
+        써서<br />
+        <b>[명사] は [명사] だ</b> 패턴을 반복해서 눈·귀에 박는 구간입니다.
+      </p>
+
+      <div class="example">
+        <div class="example-line">
+          <span class="example-jp">わたし は せんせい だ。</span>
+          <span class="example-romaji">(watashi wa sensei da.)</span>
+        </div>
+        <div class="example-kr">나는 선생님이다.</div>
+        <div class="example-kr small">
+          ➜ <b>わたし</b>(나) + <b>は</b> + <b>せんせい</b>(선생님) + <b>だ</b>
+        </div>
+      </div>
+
+      <div class="example">
+        <div class="example-line">
+          <span class="example-jp">やま は やま だ。</span>
+          <span class="example-romaji">(yama wa yama da.)</span>
+        </div>
+        <div class="example-kr">산은 산이다. (구조 연습용)</div>
+        <div class="example-kr small">
+          ➜ <b>やま</b>(산) + <b>は</b> + <b>やま</b> + <b>だ</b>
+          <span class="pill tag-grammar">패턴 연습</span>
+        </div>
+      </div>
+
+      <div class="example">
+        <div class="example-line">
+          <span class="example-jp">ほん は ほん だ。</span>
+          <span class="example-romaji">(hon wa hon da.)</span>
+        </div>
+        <div class="example-kr">책은 책이다. (눈으로 패턴 인식용)</div>
+        <div class="example-kr small">
+          ➜ <b>ほん</b>(책) + <b>は</b> + <b>ほん</b> + <b>だ</b>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
