@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>히라가나 전체 학습 (대표 단어 + 소리)</title>
+    <style>
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 24px;
+        line-height: 1.7;
+        background: #faf7f0;
+      }
+      h1,
+      h2,
+      h3 {
+        margin: 0.4em 0;
+      }
+      h1 {
+        font-size: 1.8rem;
+        text-align: center;
+      }
+
+      p.lead {
+        text-align: center;
+        color: #555;
+        margin-bottom: 1.5rem;
+      }
+
+      .notice {
+        background: #fff7d1;
+        border-left: 4px solid #f2b705;
+        padding: 10px 12px;
+        margin: 12px 0 20px;
+        font-size: 0.9rem;
+      }
+
+      .section {
+        background: #ffffff;
+        border-radius: 10px;
+        padding: 16px 18px;
+        margin-top: 16px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+      }
+
+      .buttons-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 8px 0 4px;
+      }
+
+      button {
+        border-radius: 999px;
+        border: 1px solid #ddd;
+        padding: 6px 12px;
+        background: #ffffff;
+        cursor: pointer;
+        font-size: 0.85rem;
+      }
+      button:hover {
+        background: #ffeec7;
+      }
+      button:disabled {
+        opacity: 0.4;
+        cursor: default;
+      }
+
+      .grid-title {
+        font-weight: 600;
+        margin-bottom: 6px;
+        font-size: 0.95rem;
+      }
+
+      .kana-grid {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(60px, 1fr));
+        gap: 6px;
+        margin-top: 8px;
+      }
+
+      .kana-cell {
+        background: #fff;
+        border-radius: 8px;
+        border: 1px solid #e0e0e0;
+        padding: 6px 2px 8px;
+        text-align: center;
+        cursor: pointer;
+        transition: background 0.15s, transform 0.05s, box-shadow 0.05s;
+        user-select: none;
+      }
+
+      .kana-cell.main {
+        font-size: 1.6rem;
+        font-weight: 600;
+      }
+      .kana-cell.small {
+        font-size: 1.3rem;
+      }
+      .kana-cell.word {
+        font-size: 1.4rem;
+      }
+
+      .kana-kana {
+        display: block;
+      }
+      .kana-romaji {
+        display: block;
+        margin-top: 2px;
+        font-size: 0.7rem;
+        color: #666;
+      }
+      .kana-example {
+        display: block;
+        margin-top: 2px;
+        font-size: 0.7rem;
+        color: #444;
+        text-decoration: underline;
+        cursor: pointer;
+      }
+      .kana-meaning {
+        display: block;
+        margin-top: 2px;
+        font-size: 0.7rem;
+        color: #888;
+      }
+
+      .kana-cell:hover {
+        background: #fff5d6;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+        transform: translateY(-1px);
+      }
+      .kana-cell:active {
+        transform: translateY(0);
+        box-shadow: none;
+        background: #ffe5a2;
+      }
+
+      .kana-cell.empty {
+        border-style: dashed;
+        background: #f6f1e4;
+        cursor: default;
+      }
+      .kana-cell.empty:hover {
+        background: #f6f1e4;
+        box-shadow: none;
+        transform: none;
+      }
+
+      .hint {
+        font-size: 0.8rem;
+        color: #777;
+        margin-top: 4px;
+      }
+
+      .footer-note {
+        font-size: 0.8rem;
+        color: #777;
+        margin-top: 18px;
+      }
+
+      @media (max-width: 600px) {
+        .kana-grid {
+          grid-template-columns: repeat(5, minmax(50px, 1fr));
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>히라가나 전체 학습 · 대표 단어 + 소리</h1>
+    <p class="lead">
+      - 히라가나 글자 클릭 → <b>글자만</b> 읽기<br />
+      - 예시 단어(밑줄 부분) 클릭 → <b>단어만</b> 읽기
+    </p>
+
+    <div class="notice">
+      🔊 <b>음성 품질 관련</b><br />
+      · 브라우저 내장 TTS(Web Speech API)를 쓰기 때문에, 기기/브라우저마다
+      목소리가 조금씩 다를 수 있어요.<br />
+      · 발음이 너무 빠르거나 거칠게 들리면, 코드에서 <code>utter.rate</code>를
+      0.6~0.9 사이로 조정해 보세요.
+    </div>
+
+    <!-- 컨트롤 -->
+    <div class="section">
+      <h2>1. 소리 재생 컨트롤</h2>
+      <p style="margin-bottom: 8px">
+        기본 히라가나를 순서대로 들어보고 싶으면 아래 버튼을 사용하세요. (글자만
+        순서대로 읽습니다)
+      </p>
+      <div class="buttons-row">
+        <button id="btn-init-voice">🔁 일본어 음성 찾기(재검색)</button>
+        <button id="btn-play-basic" disabled>▶ 기본 히라가나 순서 재생</button>
+        <button id="btn-stop" disabled>⏹ 재생 중지</button>
+      </div>
+      <div class="hint" id="voice-status">
+        상태: 브라우저 음성 목록 로딩 중...
+      </div>
+    </div>
+
+    <!-- 기본 히라가나 + 대표 단어 -->
+    <div class="section">
+      <h2>2. 기본 히라가나 (五十音) + 대표 단어</h2>
+      <div class="grid-title">모음 a / i / u / e / o</div>
+      <div class="kana-grid" id="grid-basic">
+        <!-- a행 -->
+        <div
+          class="kana-cell main"
+          data-kana="あ"
+          data-word="あめ"
+          data-romaji="a"
+        >
+          <span class="kana-kana">あ</span>
+          <span class="kana-romaji">a</span>
+          <span class="kana-example">あめ(비)</span>
+        </div>
+        <div
+          class="kana-cell main"
+          data-kana="い"
+          data-word="いぬ"
+          data-romaji="i"
+        >
+          <span class="kana-kana">い</span>
+          <span class="kana-romaji">i</span>
+          <span class="kana-example">いぬ(개)</span>
+        </div>
+        <div
+          class="kana-cell main"
+          data-kana="う"
+          data-word="うみ"
+          data-romaji="u"
+        >
+          <span class="kana-kana">う</span>
+          <span class="kana-romaji">u</span>
+          <span class="kana-example">うみ(바다)</span>
+        </div>
+        <div
+          class="kana-cell main"
+          data-kana="え"
+          data-word="えき"
+          data-romaji="e"
+        >
+          <span class="kana-kana">え</span>
+          <span class="kana-romaji">e</span>
+          <span class="kana-example">えき(역)</span>
+        </div>
+        <div
+          class="kana-cell main"
+          data-kana="お"
+          data-word="おかね"
+          data-romaji="o"
+        >
+          <span class="kana-kana">お</span>
+          <span class="kana-romaji">o</span>
+          <span class="kana-example">おかね(돈)</span>
+        </div>
+        <div class="kana-cell empty"></div>
+
+        <!-- k행 -->
+        <div
+          class="kana-cell main"
+          data-kana="か"
+          data-word="かさ"
+          data-romaji="ka"
+        >
+          <span class="kana-kana">か</span>
+          <span class="kana-romaji">ka</span>
+          <span class="kana-example">かさ(우산)</span>
+        </div>
+        <div
+          class="kana-cell main"
+          data-kana="き"
+          data-word="き"
+          data-romaji="ki"
+        >
+          <span class="kana-kana">き</span>
+          <span class="kana-romaji">ki</span>
+          <span class="kana-example">き(나무)</span>
+        </div>
+        <div
+          class="kana-cell main"
+          data-kana="く"
+          data-word="くるま"
+          data-romaji="ku"
+        >
+          <span class="kana-kana">く</span>
+          <span class="kana-romaji">ku</span>
+          <span class="kana-example">くるま(자동차)</span>
+        </div>
+        <div
+          class="kana-cell main"
+          data-kana="け"
+          data-word="けしごむ"
+          data-romaji="ke"
+        >
+          <span class="kana-kana">け</span>
+          <span class="kana-romaji">ke</span>
+          <span class="kana-example">けしごむ(지우개)</span>
+        </div>
+        <div
+          class="kana-cell main"
+          data-kana="こ"
+          data-word="ことり"
+          data-romaji="ko"
+        >
+          <span class="kana-kana">こ</span>
+          <span class="kana-romaji">ko</span>
+          <span class="kana-example">ことり(작은 새)</span>
+        </div>
+        <div class="kana-cell empty"></div>
+
+        <!-- s행 -->
+        <div
+          class="kana-cell main"
+          data-kana="さ"
+          data-word="さかな"
+          data-romaji="sa"
+        >
+          <span class="kana-kana">さ</span>
+          <span class="kana-romaji">sa</span>
+          <span class="kana-example">さかな(물고기)</span>
+        </div>
+        <div
+          class="kana-cell main"
+          data-kana="し"
+          data-word="しお"
+          data-romaji="shi"
+        >
+          <span class="kana-kana">し</span>
+          <span class="kana-romaji">shi</span>
+          <span class="kana-example">しお(소금)</span>
+        </div>
+        <div
+          class="kana-cell main"
+          data-kana="す"
+          data-word="すし"
+          data-romaji="su"
+        >
+          <span class="kana-kana">す</span>
+          <span class="kana-romaji">su</span>
+          <span class="kana-example">すし(스시)</span>
+        </div>
+        <div
+          class="kana-cell main"
+          data-kana="せ"
+          data-word="せんせい"
+          data-romaji="se"
+        >
+          <span class="kana-kana">せ</span>
+          <span class="kana-romaji">se</span>
+          <span class="kana-example">せんせい(선생님)</span>
+        </div>
+        <div
+          class="kana-cell main"
+          data-kana="そ"
+          data-word="そら"
+          data-romaji="so"
+        >
+          <span class="kana-kana">そ</span>
+          <span class="kana-romaji">so</span>
+          <span class="kana-example">そら(하늘)</span>
+        </div>
+        <div class="kana-cell empty"></div>
+
+        <!-- t행 -->
+        <div
+          class="kana-cell main"
+          data-kana="た"
+          data-word="たまご"
+          data-romaji="ta"
+        >
+          <span class="kana-kana">た</span>
+          <span class="kana-romaji">ta</span>
+          <span class="kana-example">たまご(달걀)</span>
+        </div>
+        <div
+          class="kana-cell main"
+          data-kana="ち"
+          data-word="ちず"
+          data-romaji="chi"
+        >
+          <span class="kana-kana">ち</span>
+          <span class="kana-romaji">chi</span>
+          <span class="kana-example">ちず(지도)</span>
+        </div>
+        <div
+          class="kana-cell main"
+          data-kana="つ"
+          data-word="つき"
+          data-romaji="tsu"
+        >
+          <span class="kana-kana">つ</span>
+          <span class="kana-romaji">tsu</span>
+          <span class="kana-example">つき(달)</span>
+        </div>
+        <div
+          class="kana-cell main"
+          data-kana="て"
+          data-word="て"
+          data-romaji="te"
+        >
+          <span class="kana-kana">て</span>
+          <span class="kana-romaji">te</span>
+          <span class="kana-example">て(손)</span>
+        </div>
+        <div
+          class="kana-cell main"
+          data-kana="と"
+          data-word="とけい"
+          data-romaji="to"
+        >
+          <span class="kana-kana">と</span>
+          <span class="kana-romaji">to</span>
+          <span class="kana-example">とけい(시계)</span>
+        </div>
+        <div class="kana-cell empty"></div>
+
+        <!-- n행 -->
+        <div
+          class="kana-cell main"
+          data-kana="な"
+          data-word="なつ"
+          data-romaji="na"
+        >
+          <span class="kana-kana">な</span>
+          <span class="kana-romaji">na</span>
+          <span class="kana-example">なつ(여름)</span>
+        </div>
+        <div
+          class="kana-cell main"
+          data-kana="に"
+          data-word="にく"
+          data-romaji="ni"
+        >
+          <span class="kana-kana">に</span>
+          <span class="kana-romaji">ni</span>
+          <span class="kana-example">にく(고기)</span>
+        </div>
+        <div
+          class="kana-cell main"
+          data-kana="ぬ"
+          data-word="ぬの"
+          data-romaji="nu"
+        >
+          <span class="kana-kana">ぬ</span>
+          <span class="kana-romaji">nu</span>
+          <span class="kana-example">ぬの(천)</span>
+        </div>
+        <div
+          class="kana-cell main"
+          data-kana="ね"
+          data-word="ねこ"
+          data-romaji="ne"
+        >
+          <span class="kana-kana">ね</span>
+          <span class="kana-romaji">ne</span>
+          <span class="kana-example">ねこ(고양이)</span>
+        </div>
+        <div
+          class="kana-cell main"
+          data-kana="の"
+          data-word="のり"
+          data-romaji="no"
+        >
+          <span class="kana-kana">の</span>
+          <span class="kana-romaji">no</span>
+          <span class="kana-example">のり(김/풀)</span>
+        </div>
+        <div class="kana-cell empty"></div>
+
+        <!-- h행 -->
+        <div
+          class="kana-cell main"
+          data-kana="は"
+          data-word="はな"
+          data-romaji="ha"
+        >
+          <span class="kana-kana">は</span>
+          <span class="kana-romaji">ha</span>
+          <span class="kana-example">はな(꽃)</span>
+        </div>
+        <div
+          class="kana-cell main"
+          data-kana="ひ"
+          data-word="ひ"
+          data-romaji="hi"
+        >
+          <span class="kana-kana">ひ</span>
+          <span class="kana-romaji">hi</span>
+          <span class="kana-example">ひ(불/날)</span>
+        </div>
+        <div
+          class="kana-cell main"
+          data-kana="ふ"
+          data-word="ふね"
+          data-romaji="fu"
+        >
+          <span class="kana-kana">ふ</span>
+          <span class="kana-romaji">fu</span>
+          <span class="kana-example">ふね(배)</span>
+        </div>
+        <div
+          class="kana-cell main"
+          data-kana="へ"
+          data-word="へや"
+          data-romaji="he"
+        >
+          <span class="kana-kana">へ</span>
+          <span class="kana-romaji">he</span>
+          <span class="kana-example">へや(방)</span>
+        </div>
+        <div
+          class="kana-cell main"
+          data-kana="ほ"
+          data-word="ほし"
+          data-romaji="ho"
+        >
+          <span class="kana-kana">ほ</span>
+          <span class="kana-romaji">ho</span>
+          <span class="kana-example">ほし(별)</span>
+        </div>
+        <div class="kana-cell empty"></div>
+
+        <!-- m행 -->
+        <div
+          class="kana-cell main"
+          data-kana="ま"
+          data-word="まど"
+          data-romaji="ma"
+        >
+          <span class="kana-kana">ま</span>
+          <span class="kana-romaji">ma</span>
+          <span class="kana-example">まど(창문)</span>
+        </div>
+        <div
+          class="kana-cell main"
+          data-kana="み"
+          data-word="みみ"
+          data-romaji="mi"
+        >
+          <span class="kana-kana">み</span>
+          <span class="kana-romaji">mi</span>
+          <span class="kana-example">みみ(귀)</span>
+        </div>
+        <div
+          class="kana-cell main"
+          data-kana="む"
+          data-word="むし"
+          data-romaji="mu"
+        >
+          <span class="kana-kana">む</span>
+          <span class="kana-romaji">mu</span>
+          <span class="kana-example">むし(벌레)</span>
+        </div>
+        <div
+          class="kana-cell main"
+          data-kana="め"
+          data-word="め"
+          data-romaji="me"
+        >
+          <span class="kana-kana">め</span>
+          <span class="kana-romaji">me</span>
+          <span class="kana-example">め(눈)</span>
+        </div>
+        <div
+          class="kana-cell main"
+          data-kana="も"
+          data-word="もり"
+          data-romaji="mo"
+        >
+          <span class="kana-kana">も</span>
+          <span class="kana-romaji">mo</span>
+          <span class="kana-example">もり(숲)</span>
+        </div>
+        <div class="kana-cell empty"></div>
+
+        <!-- y행 -->
+        <div
+          class="kana-cell main"
+          data-kana="や"
+          data-word="やま"
+          data-romaji="ya"
+        >
+          <span class="kana-kana">や</span>
+          <span class="kana-romaji">ya</span>
+          <span class="kana-example">やま(산)</span>
+        </div>
+        <div class="kana-cell empty"></div>
+        <div
+          class="kana-cell main"
+          data-kana="ゆ"
+          data-word="ゆき"
+          data-romaji="yu"
+        >
+          <span class="kana-kana">ゆ</span>
+          <span class="kana-romaji">yu</span>
+          <span class="kana-example">ゆき(눈)</span>
+        </div>
+        <div class="kana-cell empty"></div>
+        <div
+          class="kana-cell main"
+          data-kana="よ"
+          data-word="よる"
+          data-romaji="yo"
+        >
+          <span class="kana-kana">よ</span>
+          <span class="kana-romaji">yo</span>
+          <span class="kana-example">よる(밤)</span>
+        </div>
+        <div class="kana-cell empty"></div>
+
+        <!-- r행 -->
+        <div
+          class="kana-cell main"
+          data-kana="ら"
+          data-word="らいねん"
+          data-romaji="ra"
+        >
+          <span class="kana-kana">ら</span>
+          <span class="kana-romaji">ra</span>
+          <span class="kana-example">らいねん(내년)</span>
+        </div>
+        <div
+          class="kana-cell main"
+          data-kana="り"
+          data-word="りんご"
+          data-romaji="ri"
+        >
+          <span class="kana-kana">り</span>
+          <span class="kana-romaji">ri</span>
+          <span class="kana-example">りんご(사과)</span>
+        </div>
+        <div
+          class="kana-cell main"
+          data-kana="る"
+          data-word="るす"
+          data-romaji="ru"
+        >
+          <span class="kana-kana">る</span>
+          <span class="kana-romaji">ru</span>
+          <span class="kana-example">るす(부재중)</span>
+        </div>
+        <div
+          class="kana-cell main"
+          data-kana="れ"
+          data-word="れいぞうこ"
+          data-romaji="re"
+        >
+          <span class="kana-kana">れ</span>
+          <span class="kana-romaji">re</span>
+          <span class="kana-example">れいぞうこ(냉장고)</span>
+        </div>
+        <div
+          class="kana-cell main"
+          data-kana="ろ"
+          data-word="ろうそく"
+          data-romaji="ro"
+        >
+          <span class="kana-kana">ろ</span>
+          <span class="kana-romaji">ro</span>
+          <span class="kana-example">ろうそく(양초)</span>
+        </div>
+        <div class="kana-cell empty"></div>
+
+        <!-- w행 + ん -->
+        <div
+          class="kana-cell main"
+          data-kana="わ"
+          data-word="わたし"
+          data-romaji="wa"
+        >
+          <span class="kana-kana">わ</span>
+          <span class="kana-romaji">wa</span>
+          <span class="kana-example">わたし(나)</span>
+        </div>
+        <div class="kana-cell main" data-kana="を" data-romaji="wo (o)">
+          <span class="kana-kana">を</span>
+          <span class="kana-romaji">wo (조사)</span>
+        </div>
+        <div class="kana-cell main" data-kana="ん" data-romaji="n">
+          <span class="kana-kana">ん</span>
+          <span class="kana-romaji">n</span>
+        </div>
+        <div class="kana-cell empty"></div>
+        <div class="kana-cell empty"></div>
+        <div class="kana-cell empty"></div>
+      </div>
+      <div class="hint">
+        · 히라가나 큰 글자(예: あ) 클릭 → 그 글자만 한 번 읽기<br />
+        · 밑줄 단어(예: あめ) 클릭 → 그 단어만 한 번 읽기
+      </div>
+    </div>
+
+    <!-- 탁음・반탁음 -->
+    <div class="section">
+      <h2>3. 탁음・반탁음 (が/ぎ/ぐ… ぱ/ぴ/ぷ…)</h2>
+      <div class="grid-title">탁음 (だくおん)</div>
+      <div class="kana-grid">
+        <!-- が행 -->
+        <div class="kana-cell main" data-kana="が">
+          <span class="kana-kana">が</span><span class="kana-romaji">ga</span>
+        </div>
+        <div class="kana-cell main" data-kana="ぎ">
+          <span class="kana-kana">ぎ</span><span class="kana-romaji">gi</span>
+        </div>
+        <div class="kana-cell main" data-kana="ぐ">
+          <span class="kana-kana">ぐ</span><span class="kana-romaji">gu</span>
+        </div>
+        <div class="kana-cell main" data-kana="げ">
+          <span class="kana-kana">げ</span><span class="kana-romaji">ge</span>
+        </div>
+        <div class="kana-cell main" data-kana="ご">
+          <span class="kana-kana">ご</span><span class="kana-romaji">go</span>
+        </div>
+        <div class="kana-cell empty"></div>
+
+        <!-- ざ행 -->
+        <div class="kana-cell main" data-kana="ざ">
+          <span class="kana-kana">ざ</span><span class="kana-romaji">za</span>
+        </div>
+        <div class="kana-cell main" data-kana="じ">
+          <span class="kana-kana">じ</span><span class="kana-romaji">ji</span>
+        </div>
+        <div class="kana-cell main" data-kana="ず">
+          <span class="kana-kana">ず</span><span class="kana-romaji">zu</span>
+        </div>
+        <div class="kana-cell main" data-kana="ぜ">
+          <span class="kana-kana">ぜ</span><span class="kana-romaji">ze</span>
+        </div>
+        <div class="kana-cell main" data-kana="ぞ">
+          <span class="kana-kana">ぞ</span><span class="kana-romaji">zo</span>
+        </div>
+        <div class="kana-cell empty"></div>
+
+        <!-- だ행 -->
+        <div class="kana-cell main" data-kana="だ">
+          <span class="kana-kana">だ</span><span class="kana-romaji">da</span>
+        </div>
+        <div class="kana-cell main" data-kana="ぢ">
+          <span class="kana-kana">ぢ</span
+          ><span class="kana-romaji">ji (di)</span>
+        </div>
+        <div class="kana-cell main" data-kana="づ">
+          <span class="kana-kana">づ</span><span class="kana-romaji">dzu</span>
+        </div>
+        <div class="kana-cell main" data-kana="で">
+          <span class="kana-kana">で</span><span class="kana-romaji">de</span>
+        </div>
+        <div class="kana-cell main" data-kana="ど">
+          <span class="kana-kana">ど</span><span class="kana-romaji">do</span>
+        </div>
+        <div class="kana-cell empty"></div>
+
+        <!-- ば행 -->
+        <div class="kana-cell main" data-kana="ば">
+          <span class="kana-kana">ば</span><span class="kana-romaji">ba</span>
+        </div>
+        <div class="kana-cell main" data-kana="び">
+          <span class="kana-kana">び</span><span class="kana-romaji">bi</span>
+        </div>
+        <div class="kana-cell main" data-kana="ぶ">
+          <span class="kana-kana">ぶ</span><span class="kana-romaji">bu</span>
+        </div>
+        <div class="kana-cell main" data-kana="べ">
+          <span class="kana-kana">べ</span><span class="kana-romaji">be</span>
+        </div>
+        <div class="kana-cell main" data-kana="ぼ">
+          <span class="kana-kana">ぼ</span><span class="kana-romaji">bo</span>
+        </div>
+        <div class="kana-cell empty"></div>
+      </div>
+
+      <div class="grid-title" style="margin-top: 10px">반탁음 (ぱ행)</div>
+      <div class="kana-grid">
+        <div class="kana-cell main" data-kana="ぱ">
+          <span class="kana-kana">ぱ</span><span class="kana-romaji">pa</span>
+        </div>
+        <div class="kana-cell main" data-kana="ぴ">
+          <span class="kana-kana">ぴ</span><span class="kana-romaji">pi</span>
+        </div>
+        <div class="kana-cell main" data-kana="ぷ">
+          <span class="kana-kana">ぷ</span><span class="kana-romaji">pu</span>
+        </div>
+        <div class="kana-cell main" data-kana="ぺ">
+          <span class="kana-kana">ぺ</span><span class="kana-romaji">pe</span>
+        </div>
+        <div class="kana-cell main" data-kana="ぽ">
+          <span class="kana-kana">ぽ</span><span class="kana-romaji">po</span>
+        </div>
+        <div class="kana-cell empty"></div>
+      </div>
+    </div>
+
+    <!-- 작은 や・ゆ・よ -->
+    <div class="section">
+      <h2>4. 작은 や・ゆ・よ (ゃ・ゅ・ょ) 조합</h2>
+      <div class="grid-title">k / s / t / n / h / m / r + ゃ・ゅ・ょ</div>
+      <div class="kana-grid">
+        <!-- ya -->
+        <div class="kana-cell small" data-kana="きゃ">
+          <span class="kana-kana">きゃ</span
+          ><span class="kana-romaji">kya</span>
+        </div>
+        <div class="kana-cell small" data-kana="しゃ">
+          <span class="kana-kana">しゃ</span
+          ><span class="kana-romaji">sha</span>
+        </div>
+        <div class="kana-cell small" data-kana="ちゃ">
+          <span class="kana-kana">ちゃ</span
+          ><span class="kana-romaji">cha</span>
+        </div>
+        <div class="kana-cell small" data-kana="にゃ">
+          <span class="kana-kana">にゃ</span
+          ><span class="kana-romaji">nya</span>
+        </div>
+        <div class="kana-cell small" data-kana="ひゃ">
+          <span class="kana-kana">ひゃ</span
+          ><span class="kana-romaji">hya</span>
+        </div>
+        <div class="kana-cell small" data-kana="みゃ">
+          <span class="kana-kana">みゃ</span
+          ><span class="kana-romaji">mya</span>
+        </div>
+
+        <!-- yu -->
+        <div class="kana-cell small" data-kana="きゅ">
+          <span class="kana-kana">きゅ</span
+          ><span class="kana-romaji">kyu</span>
+        </div>
+        <div class="kana-cell small" data-kana="しゅ">
+          <span class="kana-kana">しゅ</span
+          ><span class="kana-romaji">shu</span>
+        </div>
+        <div class="kana-cell small" data-kana="ちゅ">
+          <span class="kana-kana">ちゅ</span
+          ><span class="kana-romaji">chu</span>
+        </div>
+        <div class="kana-cell small" data-kana="にゅ">
+          <span class="kana-kana">にゅ</span
+          ><span class="kana-romaji">nyu</span>
+        </div>
+        <div class="kana-cell small" data-kana="ひゅ">
+          <span class="kana-kana">ひゅ</span
+          ><span class="kana-romaji">hyu</span>
+        </div>
+        <div class="kana-cell small" data-kana="みゅ">
+          <span class="kana-kana">みゅ</span
+          ><span class="kana-romaji">myu</span>
+        </div>
+
+        <!-- yo -->
+        <div class="kana-cell small" data-kana="きょ">
+          <span class="kana-kana">きょ</span
+          ><span class="kana-romaji">kyo</span>
+        </div>
+        <div class="kana-cell small" data-kana="しょ">
+          <span class="kana-kana">しょ</span
+          ><span class="kana-romaji">sho</span>
+        </div>
+        <div class="kana-cell small" data-kana="ちょ">
+          <span class="kana-kana">ちょ</span
+          ><span class="kana-romaji">cho</span>
+        </div>
+        <div class="kana-cell small" data-kana="にょ">
+          <span class="kana-kana">にょ</span
+          ><span class="kana-romaji">nyo</span>
+        </div>
+        <div class="kana-cell small" data-kana="ひょ">
+          <span class="kana-kana">ひょ</span
+          ><span class="kana-romaji">hyo</span>
+        </div>
+        <div class="kana-cell small" data-kana="みょ">
+          <span class="kana-kana">みょ</span
+          ><span class="kana-romaji">myo</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 작은 っ 예시 -->
+    <div class="section">
+      <h2>5. 작은 っ (촉음) 예시 단어</h2>
+      <p style="margin-bottom: 6px">
+        아래 단어들을 클릭하면, 작은 っ으로 <b>끊어지는 자음</b>을 느낄 수
+        있습니다.
+      </p>
+      <div class="kana-grid">
+        <div class="kana-cell word" data-speak="ざっし">
+          <span class="kana-kana">ざっし</span>
+          <span class="kana-romaji">zasshi</span>
+          <span class="kana-meaning">잡지</span>
+        </div>
+        <div class="kana-cell word" data-speak="がっき">
+          <span class="kana-kana">がっき</span>
+          <span class="kana-romaji">gakki</span>
+          <span class="kana-meaning">악기</span>
+        </div>
+        <div class="kana-cell word" data-speak="はっぱ">
+          <span class="kana-kana">はっぱ</span>
+          <span class="kana-romaji">happa</span>
+          <span class="kana-meaning">잎</span>
+        </div>
+        <div class="kana-cell word" data-speak="きって">
+          <span class="kana-kana">きって</span>
+          <span class="kana-romaji">kitte</span>
+          <span class="kana-meaning">우표</span>
+        </div>
+        <div class="kana-cell word" data-speak="カップ">
+          <span class="kana-kana">カップ</span>
+          <span class="kana-romaji">kappu</span>
+          <span class="kana-meaning">컵</span>
+        </div>
+        <div class="kana-cell word" data-speak="ろっく">
+          <span class="kana-kana">ろっく</span>
+          <span class="kana-romaji">rokku</span>
+          <span class="kana-meaning">록(rock)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 장음 예시 -->
+    <div class="section">
+      <h2>6. 장음 (긴 모음) 예시 단어</h2>
+      <p style="margin-bottom: 6px">
+        모음이 길어지면 의미가 달라집니다. 특히 <b>こうこう vs ここ</b>,
+        <b>おばあさん vs おばさん</b>을 번갈아 눌러보세요.
+      </p>
+      <div class="kana-grid">
+        <div class="kana-cell word" data-speak="こうこう">
+          <span class="kana-kana">こうこう</span>
+          <span class="kana-romaji">kōkō (kookoo)</span>
+          <span class="kana-meaning">고등학교</span>
+        </div>
+        <div class="kana-cell word" data-speak="ここ">
+          <span class="kana-kana">ここ</span>
+          <span class="kana-romaji">koko</span>
+          <span class="kana-meaning">여기</span>
+        </div>
+        <div class="kana-cell word" data-speak="おばあさん">
+          <span class="kana-kana">おばあさん</span>
+          <span class="kana-romaji">obaa-san</span>
+          <span class="kana-meaning">할머니</span>
+        </div>
+        <div class="kana-cell word" data-speak="おばさん">
+          <span class="kana-kana">おばさん</span>
+          <span class="kana-romaji">oba-san</span>
+          <span class="kana-meaning">아주머니</span>
+        </div>
+        <div class="kana-cell word" data-speak="おかあさん">
+          <span class="kana-kana">おかあさん</span>
+          <span class="kana-romaji">okaa-san</span>
+          <span class="kana-meaning">어머니</span>
+        </div>
+        <div class="kana-cell word" data-speak="せんせい">
+          <span class="kana-kana">せんせい</span>
+          <span class="kana-romaji">sensei</span>
+          <span class="kana-meaning">선생님</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-note">
+      💡 나중에: 가타카나 / 문장 예문 / 녹음&비교 버튼도 이 구조 위에 그대로
+      얹어서 확장 가능.
+    </div>
+
+    <script>
+      (function () {
+        const synth = window.speechSynthesis;
+        let jaVoice = null;
+        let speakingQueue = [];
+        let isPlayingSequence = false;
+
+        const statusEl = document.getElementById("voice-status");
+        const btnInit = document.getElementById("btn-init-voice");
+        const btnPlayBasic = document.getElementById("btn-play-basic");
+        const btnStop = document.getElementById("btn-stop");
+        const basicGrid = document.getElementById("grid-basic");
+
+        function logStatus(msg) {
+          if (statusEl) statusEl.textContent = "상태: " + msg;
+        }
+
+        function pickJapaneseVoice() {
+          const voices = synth.getVoices();
+          if (!voices || voices.length === 0) return null;
+
+          const jaVoices = voices.filter(
+            (v) => v.lang && v.lang.toLowerCase().startsWith("ja")
+          );
+          if (jaVoices.length === 0) return null;
+
+          const preferredNames = [
+            "Kyoko",
+            "Hikari",
+            "Mizuki",
+            "Nano",
+            "女",
+            "女性",
+          ];
+          let preferred = jaVoices.find((v) =>
+            preferredNames.some((name) =>
+              v.name.toLowerCase().includes(name.toLowerCase())
+            )
+          );
+          if (preferred) return preferred;
+
+          return jaVoices[0];
+        }
+
+        function initVoice() {
+          jaVoice = pickJapaneseVoice();
+          if (jaVoice) {
+            logStatus(`일본어 음성 선택됨: ${jaVoice.name} (${jaVoice.lang})`);
+            btnPlayBasic.disabled = false;
+          } else {
+            logStatus(
+              "일본어(ja-JP) 음성을 찾지 못했습니다. 기본 음성이 사용되거나 소리가 나지 않을 수 있습니다."
+            );
+            btnPlayBasic.disabled = true;
+          }
+        }
+
+        if (typeof speechSynthesis !== "undefined") {
+          if (synth.onvoiceschanged !== undefined) {
+            synth.onvoiceschanged = function () {
+              if (!jaVoice) {
+                initVoice();
+              }
+            };
+          }
+        }
+
+        function speakText(text) {
+          if (!text || !window.speechSynthesis) return;
+          synth.cancel();
+          isPlayingSequence = false;
+          speakingQueue = [];
+          btnStop.disabled = true;
+
+          const utter = new SpeechSynthesisUtterance(text);
+          utter.lang = "ja-JP";
+          if (jaVoice) utter.voice = jaVoice;
+          utter.rate = 0.6; // 필요시 0.6~0.9 사이 조정
+          utter.pitch = 0.9;
+
+          synth.speak(utter);
+        }
+
+        // 기본 히라가나 순서 재생 (글자만)
+        function playBasicSequence() {
+          if (!basicGrid) return;
+          const cells = Array.from(
+            basicGrid.querySelectorAll(".kana-cell.main[data-kana]")
+          );
+          if (cells.length === 0) return;
+
+          speakingQueue = cells;
+          isPlayingSequence = true;
+          btnStop.disabled = false;
+          playNextFromQueue();
+        }
+
+        function playNextFromQueue() {
+          if (!isPlayingSequence || speakingQueue.length === 0) {
+            isPlayingSequence = false;
+            btnStop.disabled = true;
+            return;
+          }
+
+          const el = speakingQueue.shift();
+          const kana = el.getAttribute("data-kana");
+          if (!kana) {
+            playNextFromQueue();
+            return;
+          }
+
+          const utter = new SpeechSynthesisUtterance(kana);
+          utter.lang = "ja-JP";
+          if (jaVoice) utter.voice = jaVoice;
+          utter.rate = 0.6;
+          utter.pitch = 0.9;
+
+          utter.onend = function () {
+            setTimeout(playNextFromQueue, 200);
+          };
+
+          synth.speak(utter);
+        }
+
+        function stopAll() {
+          if (!window.speechSynthesis) return;
+          synth.cancel();
+          speakingQueue = [];
+          isPlayingSequence = false;
+          btnStop.disabled = true;
+        }
+
+        // 클릭 이벤트
+        document.addEventListener("click", function (e) {
+          // 1) 예시 단어 영역 클릭 (기본 히라가나 표)
+          const exampleSpan = e.target.closest(".kana-example");
+          if (exampleSpan) {
+            const cell = exampleSpan.closest(".kana-cell");
+            if (!cell) return;
+            const word = cell.getAttribute("data-word");
+            if (word) {
+              speakText(word);
+              return;
+            }
+          }
+
+          // 2) 일반 셀 클릭
+          const cell = e.target.closest(".kana-cell");
+          if (!cell || cell.classList.contains("empty")) return;
+
+          // 기본 히라가나 표: 글자 클릭 시 글자만
+          if (
+            cell.classList.contains("main") &&
+            cell.hasAttribute("data-kana")
+          ) {
+            // 단어는 이미 위에서 처리됨. 여기서는 글자만.
+            const kana = cell.getAttribute("data-kana");
+            if (kana) {
+              speakText(kana);
+              return;
+            }
+          }
+
+          // 작은 っ / 장음 예시 등: data-speak 있으면 그걸 읽기
+          const s = cell.getAttribute("data-speak");
+          const k = cell.getAttribute("data-kana");
+          if (s) {
+            speakText(s);
+          } else if (k) {
+            speakText(k);
+          }
+        });
+
+        if (btnInit) {
+          btnInit.addEventListener("click", function () {
+            initVoice();
+          });
+        }
+
+        if (btnPlayBasic) {
+          btnPlayBasic.addEventListener("click", function () {
+            if (!jaVoice && synth.getVoices().length === 0) {
+              logStatus(
+                "음성 목록이 아직 로딩되지 않았습니다. 잠시 후 다시 눌러보세요."
+              );
+              return;
+            }
+            if (!jaVoice) initVoice();
+            playBasicSequence();
+          });
+        }
+
+        if (btnStop) {
+          btnStop.addEventListener("click", function () {
+            stopAll();
+          });
+        }
+
+        if (!("speechSynthesis" in window)) {
+          logStatus("이 브라우저는 음성 합성을 지원하지 않습니다.");
+          btnInit.disabled = true;
+          btnPlayBasic.disabled = true;
+        } else {
+          logStatus(
+            '브라우저 음성 목록 로딩 중... 필요하면 "일본어 음성 찾기" 버튼을 눌러주세요.'
+          );
+        }
+      })();
+    </script>
+  </body>
+</html>
