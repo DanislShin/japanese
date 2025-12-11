@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>작은 や・ゆ・よ / 작은 っ 연습</title>
+    <style>
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 24px;
+        line-height: 1.7;
+        background: #faf7f0;
+      }
+      h1,
+      h2,
+      h3 {
+        margin: 0.4em 0;
+      }
+      h1 {
+        font-size: 1.8rem;
+        text-align: center;
+      }
+
+      p.lead {
+        text-align: center;
+        color: #555;
+        margin-bottom: 1.5rem;
+      }
+
+      .notice {
+        background: #fff7d1;
+        border-left: 4px solid #f2b705;
+        padding: 10px 12px;
+        margin: 12px 0 20px;
+        font-size: 0.9rem;
+      }
+
+      .section {
+        background: #ffffff;
+        border-radius: 10px;
+        padding: 16px 18px;
+        margin-top: 16px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+      }
+
+      .buttons-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 8px 0 4px;
+      }
+
+      button {
+        border-radius: 999px;
+        border: 1px solid #ddd;
+        padding: 6px 12px;
+        background: #ffffff;
+        cursor: pointer;
+        font-size: 0.85rem;
+      }
+      button:hover {
+        background: #ffeec7;
+      }
+      button:disabled {
+        opacity: 0.4;
+        cursor: default;
+      }
+
+      .grid-title {
+        font-weight: 600;
+        margin-bottom: 6px;
+        font-size: 0.95rem;
+      }
+
+      .kana-grid {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(60px, 1fr));
+        gap: 6px;
+        margin-top: 8px;
+      }
+
+      .kana-cell {
+        background: #fff;
+        border-radius: 8px;
+        border: 1px solid #e0e0e0;
+        padding: 6px 2px 8px;
+        text-align: center;
+        cursor: pointer;
+        transition: background 0.15s, transform 0.05s, box-shadow 0.05s;
+        user-select: none;
+      }
+
+      .kana-cell.small {
+        font-size: 1.4rem;
+        font-weight: 600;
+      }
+      .kana-cell.word {
+        font-size: 1.4rem;
+      }
+
+      .kana-kana {
+        display: block;
+      }
+      .kana-romaji {
+        display: block;
+        margin-top: 2px;
+        font-size: 0.7rem;
+        color: #666;
+      }
+      .kana-meaning {
+        display: block;
+        margin-top: 2px;
+        font-size: 0.7rem;
+        color: #888;
+      }
+
+      .kana-cell:hover {
+        background: #fff5d6;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+        transform: translateY(-1px);
+      }
+      .kana-cell:active {
+        transform: translateY(0);
+        box-shadow: none;
+        background: #ffe5a2;
+      }
+
+      .hint {
+        font-size: 0.8rem;
+        color: #777;
+        margin-top: 4px;
+      }
+
+      .footer-note {
+        font-size: 0.8rem;
+        color: #777;
+        margin-top: 18px;
+      }
+
+      @media (max-width: 600px) {
+        .kana-grid {
+          grid-template-columns: repeat(5, minmax(50px, 1fr));
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>작은 や・ゆ・よ / 작은 っ 연습</h1>
+    <p class="lead">
+      - 글자 칸 클릭 → 그 <b>히라가나 묶음</b>만 읽기<br />
+      - 단어 칸 클릭 → <b>단어만</b> 읽기
+    </p>
+
+    <div class="notice">
+      🔊 <b>음성 안내</b><br />
+      · 브라우저 내장 일본어 TTS를 사용합니다. 기기/브라우저마다 목소리가 조금씩
+      다를 수 있어요.<br />
+      · 기본적으로 <b>여성 일본어 음성</b>을 우선 선택하고, 속도는 약간 느리게
+      맞춰두었습니다.
+    </div>
+
+    <!-- 4. 작은 や・ゆ・よ -->
+    <div class="section">
+      <h2>4. 작은 や・ゆ・よ (ゃ・ゅ・ょ) 조합</h2>
+      <p style="margin-bottom: 6px">
+        자음 + 작은 や/ゆ/よ 조합을 한 번에 보면서 소리로 익히기.
+      </p>
+      <div class="grid-title">
+        k / s / t / n / h / m / r + ゃ・ゅ・ょ (대표형)
+      </div>
+      <div class="kana-grid">
+        <!-- ya -->
+        <div class="kana-cell small" data-kana="きゃ">
+          <span class="kana-kana">きゃ</span>
+          <span class="kana-romaji">kya</span>
+        </div>
+        <div class="kana-cell small" data-kana="しゃ">
+          <span class="kana-kana">しゃ</span>
+          <span class="kana-romaji">sha</span>
+        </div>
+        <div class="kana-cell small" data-kana="ちゃ">
+          <span class="kana-kana">ちゃ</span>
+          <span class="kana-romaji">cha</span>
+        </div>
+        <div class="kana-cell small" data-kana="にゃ">
+          <span class="kana-kana">にゃ</span>
+          <span class="kana-romaji">nya</span>
+        </div>
+        <div class="kana-cell small" data-kana="ひゃ">
+          <span class="kana-kana">ひゃ</span>
+          <span class="kana-romaji">hya</span>
+        </div>
+        <div class="kana-cell small" data-kana="みゃ">
+          <span class="kana-kana">みゃ</span>
+          <span class="kana-romaji">mya</span>
+        </div>
+
+        <!-- yu -->
+        <div class="kana-cell small" data-kana="きゅ">
+          <span class="kana-kana">きゅ</span>
+          <span class="kana-romaji">kyu</span>
+        </div>
+        <div class="kana-cell small" data-kana="しゅ">
+          <span class="kana-kana">しゅ</span>
+          <span class="kana-romaji">shu</span>
+        </div>
+        <div class="kana-cell small" data-kana="ちゅ">
+          <span class="kana-kana">ちゅ</span>
+          <span class="kana-romaji">chu</span>
+        </div>
+        <div class="kana-cell small" data-kana="にゅ">
+          <span class="kana-kana">にゅ</span>
+          <span class="kana-romaji">nyu</span>
+        </div>
+        <div class="kana-cell small" data-kana="ひゅ">
+          <span class="kana-kana">ひゅ</span>
+          <span class="kana-romaji">hyu</span>
+        </div>
+        <div class="kana-cell small" data-kana="みゅ">
+          <span class="kana-kana">みゅ</span>
+          <span class="kana-romaji">myu</span>
+        </div>
+
+        <!-- yo -->
+        <div class="kana-cell small" data-kana="きょ">
+          <span class="kana-kana">きょ</span>
+          <span class="kana-romaji">kyo</span>
+        </div>
+        <div class="kana-cell small" data-kana="しょ">
+          <span class="kana-kana">しょ</span>
+          <span class="kana-romaji">sho</span>
+        </div>
+        <div class="kana-cell small" data-kana="ちょ">
+          <span class="kana-kana">ちょ</span>
+          <span class="kana-romaji">cho</span>
+        </div>
+        <div class="kana-cell small" data-kana="にょ">
+          <span class="kana-kana">にょ</span>
+          <span class="kana-romaji">nyo</span>
+        </div>
+        <div class="kana-cell small" data-kana="ひょ">
+          <span class="kana-kana">ひょ</span>
+          <span class="kana-romaji">hyo</span>
+        </div>
+        <div class="kana-cell small" data-kana="みょ">
+          <span class="kana-kana">みょ</span>
+          <span class="kana-romaji">myo</span>
+        </div>
+      </div>
+
+      <div class="grid-title" style="margin-top: 10px">
+        대표 예제 단어 (작은 ゃ・ゅ・ょ 포함)
+      </div>
+      <div class="kana-grid">
+        <div class="kana-cell word" data-speak="きゃく">
+          <span class="kana-kana">きゃく</span>
+          <span class="kana-romaji">kyaku</span>
+          <span class="kana-meaning">손님</span>
+        </div>
+        <div class="kana-cell word" data-speak="しゃしん">
+          <span class="kana-kana">しゃしん</span>
+          <span class="kana-romaji">shashin</span>
+          <span class="kana-meaning">사진</span>
+        </div>
+        <div class="kana-cell word" data-speak="ちょうど">
+          <span class="kana-kana">ちょうど</span>
+          <span class="kana-romaji">choudo</span>
+          <span class="kana-meaning">딱, 정확히</span>
+        </div>
+        <div class="kana-cell word" data-speak="にゃんこ">
+          <span class="kana-kana">にゃんこ</span>
+          <span class="kana-romaji">nyanko</span>
+          <span class="kana-meaning">고양이(애칭)</span>
+        </div>
+        <div class="kana-cell word" data-speak="きゅう">
+          <span class="kana-kana">きゅう</span>
+          <span class="kana-romaji">kyuu</span>
+          <span class="kana-meaning">구, 급/급함 등 문맥에 따라</span>
+        </div>
+        <div class="kana-cell word" data-speak="きょう">
+          <span class="kana-kana">きょう</span>
+          <span class="kana-romaji">kyou</span>
+          <span class="kana-meaning">오늘</span>
+        </div>
+      </div>
+
+      <div class="hint">
+        · 위 작은 글자 조합 칸(きゃ, きゅ, きょ 등)을 눌러서 소리 먼저
+        익히고,<br />
+        · 아래 예제 단어 칸(きゃく, しゃしん 등)을 눌러서 실제 단어 안에서 다시
+        확인.
+      </div>
+    </div>
+
+    <!-- 5. 작은 っ -->
+    <div class="section">
+      <h2>5. 작은 っ (촉음) 예시 단어</h2>
+      <p style="margin-bottom: 6px">
+        작은 っ 뒤에서 <b>자음이 한 번 끊어졌다가</b> 이어지는 느낌을 귀로
+        익히기.
+      </p>
+      <div class="kana-grid">
+        <div class="kana-cell word" data-speak="ざっし">
+          <span class="kana-kana">ざっし</span>
+          <span class="kana-romaji">zasshi</span>
+          <span class="kana-meaning">잡지</span>
+        </div>
+        <div class="kana-cell word" data-speak="がっき">
+          <span class="kana-kana">がっき</span>
+          <span class="kana-romaji">gakki</span>
+          <span class="kana-meaning">악기</span>
+        </div>
+        <div class="kana-cell word" data-speak="はっぱ">
+          <span class="kana-kana">はっぱ</span>
+          <span class="kana-romaji">happa</span>
+          <span class="kana-meaning">잎</span>
+        </div>
+        <div class="kana-cell word" data-speak="きって">
+          <span class="kana-kana">きって</span>
+          <span class="kana-romaji">kitte</span>
+          <span class="kana-meaning">우표</span>
+        </div>
+        <div class="kana-cell word" data-speak="カップ">
+          <span class="kana-kana">カップ</span>
+          <span class="kana-romaji">kappu</span>
+          <span class="kana-meaning">컵</span>
+        </div>
+        <div class="kana-cell word" data-speak="ろっく">
+          <span class="kana-kana">ろっく</span>
+          <span class="kana-romaji">rokku</span>
+          <span class="kana-meaning">록(rock)</span>
+        </div>
+      </div>
+      <div class="hint">
+        · 같은 자음이 겹치는 부분(っ 뒤)을 귀로 느끼게 해 주는 연습용 세트.
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>음성 초기화</h2>
+      <div class="buttons-row">
+        <button id="btn-init-voice">🔁 일본어 여성 음성 다시 찾기</button>
+      </div>
+      <div class="hint" id="voice-status">
+        상태: 브라우저 음성 목록 로딩 중...
+      </div>
+    </div>
+
+    <script>
+      // 일본어 여성 음성 선택 로직
+      let jaVoice = null;
+
+      function chooseJaVoice() {
+        const voices = window.speechSynthesis.getVoices();
+        if (!voices || voices.length === 0) return;
+
+        // 1순위: 일본어 + 여성/Female/女 등 이름에 들어간 것
+        const femaleCandidates = voices.filter(
+          (v) =>
+            v.lang &&
+            v.lang.toLowerCase().startsWith("ja") &&
+            /female|여성|女|hiroko|kyoko|mizuki/i.test(v.name)
+        );
+
+        if (femaleCandidates.length > 0) {
+          jaVoice = femaleCandidates[0];
+        } else {
+          // 2순위: 아무 일본어 음성
+          const jaCandidates = voices.filter(
+            (v) => v.lang && v.lang.toLowerCase().startsWith("ja")
+          );
+          if (jaCandidates.length > 0) {
+            jaVoice = jaCandidates[0];
+          } else {
+            jaVoice = null;
+          }
+        }
+
+        const status = document.getElementById("voice-status");
+        if (jaVoice) {
+          status.textContent = `상태: "${jaVoice.name}" 일본어 음성 사용 중 (속도 약간 느리게)`;
+        } else {
+          status.textContent =
+            "상태: 일본어 음성을 찾지 못했습니다. (브라우저 설정을 확인해주세요)";
+        }
+      }
+
+      function speakJa(text) {
+        if (!window.speechSynthesis) return;
+        if (!jaVoice) {
+          chooseJaVoice();
+        }
+        const utter = new SpeechSynthesisUtterance(text);
+        if (jaVoice) {
+          utter.voice = jaVoice;
+        }
+        utter.lang = "ja-JP";
+        utter.rate = 0.9; // 조금 느리게
+        utter.pitch = 1.0;
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(utter);
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        if (typeof speechSynthesis !== "undefined") {
+          if (speechSynthesis.getVoices().length === 0) {
+            speechSynthesis.onvoiceschanged = () => {
+              chooseJaVoice();
+            };
+          } else {
+            chooseJaVoice();
+          }
+        } else {
+          const status = document.getElementById("voice-status");
+          status.textContent =
+            "상태: 이 브라우저에서는 음성 합성이 지원되지 않습니다.";
+        }
+
+        // 작은 ゃ・ゆ・よ 조합 클릭 → 그 음절 읽기
+        document.querySelectorAll(".kana-cell.small").forEach((cell) => {
+          cell.addEventListener("click", () => {
+            const kana = cell.getAttribute("data-kana");
+            if (kana) speakJa(kana);
+          });
+        });
+
+        // 단어 칸 클릭 → 단어 읽기
+        document.querySelectorAll(".kana-cell.word").forEach((cell) => {
+          cell.addEventListener("click", () => {
+            const text =
+              cell.getAttribute("data-speak") ||
+              cell.querySelector(".kana-kana")?.textContent ||
+              "";
+            if (text) speakJa(text);
+          });
+        });
+
+        // 음성 재검색 버튼
+        document
+          .getElementById("btn-init-voice")
+          .addEventListener("click", () => {
+            window.speechSynthesis.cancel();
+            chooseJaVoice();
+          });
+      });
+    </script>
+  </body>
+</html>
