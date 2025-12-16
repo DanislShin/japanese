@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>히라가나 ん 발음 규칙 (연습 웹)</title>
+  <style>
+    :root { --bg:#0b0f14; --card:#121823; --text:#e8eef6; --muted:#a9b4c2; --line:#223047; --btn:#1f6feb; --btn2:#2ea043; }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", sans-serif;
+      background:linear-gradient(180deg, var(--bg), #070a0f); color:var(--text);
+    }
+    .wrap{max-width:980px; margin:0 auto; padding:24px 16px 48px}
+    header{padding:10px 0 14px}
+    h1{margin:0 0 8px; font-size:22px}
+    .sub{color:var(--muted); font-size:14px; line-height:1.5}
+    .bar{
+      display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+      margin:14px 0 18px; padding:12px; border:1px solid var(--line); background:rgba(18,24,35,.65); border-radius:14px;
+    }
+    select, button, input{
+      font:inherit; border-radius:10px; border:1px solid var(--line); background:#0e1420; color:var(--text);
+      padding:9px 10px;
+    }
+    button{cursor:pointer}
+    button.primary{background:var(--btn); border-color:transparent}
+    button.good{background:var(--btn2); border-color:transparent}
+    button.ghost{background:transparent}
+    button:disabled{opacity:.55; cursor:not-allowed}
+    .grid{display:grid; grid-template-columns:1fr; gap:12px}
+    @media (min-width: 860px){ .grid{grid-template-columns:1fr 1fr} }
+    .card{
+      border:1px solid var(--line); background:rgba(18,24,35,.75); border-radius:16px; padding:14px 14px 12px;
+    }
+    .ruleTitle{display:flex; gap:10px; align-items:baseline; margin:0 0 8px}
+    .ruleTitle h2{margin:0; font-size:16px}
+    .badge{font-size:12px; color:#c7d2fe; border:1px solid #384b7a; padding:2px 8px; border-radius:999px; background:rgba(56,75,122,.25)}
+    .desc{margin:0 0 10px; color:var(--muted); font-size:13px; line-height:1.55}
+    .examples{display:flex; flex-direction:column; gap:8px}
+    .ex{
+      display:flex; gap:10px; align-items:center; justify-content:space-between;
+      padding:10px; border:1px solid var(--line); border-radius:12px; background:rgba(10,14,20,.55);
+    }
+    .left{display:flex; flex-direction:column; gap:2px}
+    .jp{font-size:18px; letter-spacing:.2px}
+    .roman{font-size:12px; color:var(--muted)}
+    .ko{font-size:12px; color:#d7f3ff}
+    .hint{font-size:12px; color:#ffd7a8}
+    .btnRow{display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end}
+    .mini{font-size:12px; padding:7px 9px; border-radius:10px}
+    .footer{
+      margin-top:18px; color:var(--muted); font-size:12px; line-height:1.6;
+      border-top:1px solid var(--line); padding-top:14px;
+    }
+    .kbd{border:1px solid var(--line); padding:1px 6px; border-radius:7px; background:#0e1420; color:#dbe7ff}
+    .warn{color:#ffb4b4}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>히라가나 <span class="kbd">ん</span> 발음 규칙</h1>
+    <div class="sub">
+      뒤에 오는 소리에 따라 <span class="kbd">ん</span> 발음이 달라집니다. 아래 예시 단어를 눌러 바로 듣고 따라 말해보세요.
+      (브라우저의 일본어 음성(ja-JP) 지원 여부에 따라 음질이 달라질 수 있어요.)
+    </div>
+  </header>
+
+  <div class="bar">
+    <label>일본어 음성(ja-JP) 선택:
+      <select id="voiceSelect" aria-label="Japanese voice"></select>
+    </label>
+    <label>속도:
+      <input id="rate" type="range" min="0.7" max="1.15" step="0.05" value="0.95" />
+      <span id="rateVal" class="kbd">0.95</span>
+    </label>
+    <button class="primary" id="testBtn">선택 음성 테스트</button>
+    <button class="ghost" id="stopBtn">정지</button>
+  </div>
+
+  <div class="grid" id="rules"></div>
+
+  <div class="footer">
+    <div><b>주의(한국인이 자주 틀리는 포인트)</b></div>
+    <ul>
+      <li class="warn">한국어 받침 “ㄴ”처럼 혀를 잇몸에 딱 붙여 끊지 않기</li>
+      <li>대부분은 “혀”보다 “공기(콧소리)”로 처리하기</li>
+    </ul>
+    <div>단축키: <span class="kbd">Space</span> 정지</div>
+  </div>
+</div>
+
+<script>
+  const RULES = [
+    {
+      title: "① 뒤에 모음 / や・ゆ・よ",
+      badge: "n 느낌",
+      desc: "ん + 모음(あ/い/う/え/お) 또는 ん + や/ゆ/よ 일 때는 가볍게 ‘n’ 느낌으로. (혀를 강하게 붙이지 말고 공기만 멈춘 느낌)",
+      examples: [
+        { jp:"きんようび", roman:"kin-yōbi", ko:"금요일", note:"ん + よ", say:"きんようび" },
+        { jp:"せんえん", roman:"sen-en", ko:"1000엔", note:"ん + え (두 음절 분리)", say:"せんえん" },
+        { jp:"あんい", roman:"an-i", ko:"(학습용 발음 예시: 安易) ‘쉽게/안이하게’", note:"ん + い", say:"あんい" },
+      ]
+    },
+    {
+      title: "② 뒤에 か・さ・た・は행 (k/g/s/t/h 계열)",
+      badge: "ㅇ(ŋ) 느낌",
+      desc: "ん 뒤에 か/き/く/け/こ, さ행, た행, は행 등이 오면 ‘ㅇ’(코로 울림) 같은 비음(ŋ)으로 자연스럽게 넘어가요.",
+      examples: [
+        { jp:"さんか", roman:"saŋ-ka", ko:"참가", note:"ん + か", say:"さんか" },
+        { jp:"えんき", roman:"eŋ-ki", ko:"연기(=延期: 연기/미룸)", note:"ん + き", say:"えんき" },
+        { jp:"てんごく", roman:"teŋ-go-ku", ko:"천국", note:"ん + ご", say:"てんごく" },
+      ]
+    },
+    {
+      title: "③ 뒤에 ま・ば・ぱ행 (m/b/p 계열)",
+      badge: "m 느낌",
+      desc: "ん 뒤에 ま/み/む/め/も, ば행, ぱ행이 오면 입술이 닫히면서 ‘m’처럼 들리는 경우가 많아요.",
+      examples: [
+        { jp:"しんぶん", roman:"shimbun", ko:"신문", note:"ん + ぶ", say:"しんぶん" },
+        { jp:"さんぽ", roman:"sampo", ko:"산책", note:"ん + ぽ", say:"さんぽ" },
+        { jp:"てんぷら", roman:"tempura", ko:"튀김(덴푸라)", note:"ん + ぷ", say:"てんぷら" },
+      ]
+    },
+    {
+      title: "④ 문장 끝 / 단어 끝",
+      badge: "길게 울림(ɴ)",
+      desc: "끝에 오는 ん은 혀를 붙이지 말고, 입안/콧속에서 ‘웅~’ 하고 울리듯 마무리해요.",
+      examples: [
+        { jp:"ほん", roman:"hoɴ", ko:"책", note:"단어 끝", say:"ほん" },
+        { jp:"にほん", roman:"nihōɴ", ko:"일본", note:"단어 끝", say:"にほん" },
+        { jp:"せん", roman:"seɴ", ko:"1000(천)", note:"단어 끝", say:"せん" },
+      ]
+    }
+  ];
+
+  const voiceSelect = document.getElementById("voiceSelect");
+  const rate = document.getElementById("rate");
+  const rateVal = document.getElementById("rateVal");
+  const testBtn = document.getElementById("testBtn");
+  const stopBtn = document.getElementById("stopBtn");
+  const rulesEl = document.getElementById("rules");
+
+  function buildRules(){
+    rulesEl.innerHTML = "";
+    RULES.forEach((r, idx) => {
+      const card = document.createElement("section");
+      card.className = "card";
+      card.innerHTML = `
+        <div class="ruleTitle">
+          <h2>${r.title}</h2>
+          <span class="badge">${r.badge}</span>
+        </div>
+        <p class="desc">${r.desc}</p>
+        <div class="examples" id="ex-${idx}"></div>
+      `;
+      rulesEl.appendChild(card);
+      const exWrap = card.querySelector(`#ex-${idx}`);
+      r.examples.forEach(ex => {
+        const row = document.createElement("div");
+        row.className = "ex";
+        row.innerHTML = `
+          <div class="left">
+            <div class="jp">${ex.jp}</div>
+            <div class="roman">${ex.roman}</div>
+            <div class="ko">${ex.ko}</div>
+            <div class="hint">${ex.note}</div>
+          </div>
+          <div class="btnRow">
+            <button class="mini good" data-say="${ex.say}">듣기</button>
+            <button class="mini" data-say="${ex.say}" data-slow="1">느리게</button>
+          </div>
+        `;
+        exWrap.appendChild(row);
+      });
+    });
+  }
+
+  function getJapaneseVoices(){
+    const voices = speechSynthesis.getVoices();
+    const ja = voices.filter(v => (v.lang || "").toLowerCase().startsWith("ja"));
+    return { ja };
+  }
+
+  function populateVoices(){
+    const { ja } = getJapaneseVoices();
+    voiceSelect.innerHTML = "";
+    if (!ja.length){
+      const opt = document.createElement("option");
+      opt.value = "";
+      opt.textContent = "일본어(ja) 음성을 찾지 못했습니다 (기본 음성 사용)";
+      voiceSelect.appendChild(opt);
+      return;
+    }
+    ja.forEach((v, i) => {
+      const opt = document.createElement("option");
+      opt.value = String(i);
+      opt.textContent = `${v.name} (${v.lang})`;
+      voiceSelect.appendChild(opt);
+    });
+  }
+
+  function speak(text, slow=false){
+    if (!("speechSynthesis" in window)) {
+      alert("이 브라우저는 음성 재생을 지원하지 않습니다.");
+      return;
+    }
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    const { ja } = getJapaneseVoices();
+    const selIdx = parseInt(voiceSelect.value, 10);
+    if (ja.length && !Number.isNaN(selIdx) && ja[selIdx]) u.voice = ja[selIdx];
+    u.lang = (u.voice && u.voice.lang) ? u.voice.lang : "ja-JP";
+    u.rate = slow ? Math.max(0.7, parseFloat(rate.value) - 0.2) : parseFloat(rate.value);
+    u.pitch = 1.0;
+    u.volume = 1.0;
+    speechSynthesis.speak(u);
+  }
+
+  function stop(){
+    if ("speechSynthesis" in window) speechSynthesis.cancel();
+  }
+
+  rate.addEventListener("input", () => rateVal.textContent = Number(rate.value).toFixed(2));
+  testBtn.addEventListener("click", () => speak("こんにちは。ひらがなの ん の はつおん を れんしゅう しましょう。"));
+  stopBtn.addEventListener("click", stop);
+
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest("button[data-say]");
+    if (!btn) return;
+    const text = btn.getAttribute("data-say");
+    const slow = btn.getAttribute("data-slow") === "1";
+    speak(text, slow);
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.code === "Space") { e.preventDefault(); stop(); }
+  });
+
+  buildRules();
+  populateVoices();
+  if ("speechSynthesis" in window) {
+    speechSynthesis.onvoiceschanged = populateVoices;
+    setTimeout(populateVoices, 250);
+    setTimeout(populateVoices, 1000);
+  }
+</script>
+</body>
+</html>
