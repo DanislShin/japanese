@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>일본어 0단계 드릴 (평서 4형태 + 공손체 토글 + 한국어 + TTS)</title>
+    <style>
+      body {
+        margin: 0;
+        background: #0b0f14;
+        color: #e8eef7;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Noto Sans KR", sans-serif;
+      }
+      .wrap {
+        max-width: 1100px;
+        margin: auto;
+        padding: 20px;
+      }
+      h1 {
+        font-size: 20px;
+        margin: 0 0 10px;
+      }
+      .card {
+        background: #121a23;
+        border: 1px solid #233040;
+        border-radius: 14px;
+        padding: 14px;
+        margin: 12px 0;
+      }
+      .row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      select,
+      button {
+        background: #0f1620;
+        border: 1px solid #233040;
+        color: #e8eef7;
+        padding: 10px;
+        border-radius: 10px;
+        font-size: 14px;
+      }
+      button.primary {
+        border-color: #7cc4ff;
+        background: rgba(124, 196, 255, 0.15);
+      }
+      .jp {
+        font-size: 20px;
+        font-weight: 780;
+        margin-top: 6px;
+      }
+      .ko {
+        font-size: 14px;
+        color: #a9b4c0;
+        margin-top: 4px;
+      }
+      .small {
+        font-size: 12px;
+        color: #8fa0b5;
+        line-height: 1.6;
+      }
+      .tag {
+        font-size: 12px;
+        padding: 3px 8px;
+        border-radius: 999px;
+        border: 1px solid #233040;
+        color: #a9b4c0;
+      }
+      .speak {
+        cursor: pointer;
+      }
+      .speak:hover {
+        color: #7cc4ff;
+      }
+      code {
+        background: rgba(255, 255, 255, 0.06);
+        padding: 2px 6px;
+        border-radius: 6px;
+      }
+      .split {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+        margin-top: 6px;
+      }
+      @media (min-width: 860px) {
+        .split {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      .box {
+        border: 1px solid #233040;
+        border-radius: 12px;
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.02);
+      }
+      .label {
+        font-size: 12px;
+        color: #cfe1ff;
+        margin-bottom: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>
+        일본어 0단계 드릴 <span class="tag">평서 4형태</span>
+        <span class="tag">보통체/공손체 토글</span>
+        <span class="tag">한국어</span> <span class="tag">TTS</span>
+      </h1>
+
+      <div class="card">
+        <div class="row" style="justify-content: space-between">
+          <div class="row">
+            <span class="tag">TTS</span>
+            <button class="primary" id="ttsBtn">TTS: ON</button>
+            <span class="small">일본어 문장 클릭 → 읽기</span>
+          </div>
+
+          <div class="row">
+            <span class="tag">표현</span>
+            <button class="primary" id="plainBtn">보통체(훈련)</button>
+            <button id="politeBtn">공손체(같이보기)</button>
+          </div>
+        </div>
+
+        <div class="small" style="margin-top: 10px">
+          • 지금 단계는 <b>평서 4형태</b>만 반복 (의문/부정의문은 설명만)<br />
+          • 공손체는 같은 문장을
+          <code>です/ではありません/でした/ではありませんでした</code>로만
+          바꿔서 같이 봄
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="row">
+          <select id="word"></select>
+          <select id="subject"></select>
+          <button class="primary" id="gen">4형태 생성</button>
+        </div>
+      </div>
+
+      <div class="card" id="output"></div>
+    </div>
+
+    <script>
+      /* ---------------- TTS ---------------- */
+      let ttsOn = true;
+      const ttsBtn = document.getElementById("ttsBtn");
+
+      function speakJP(text) {
+        if (!ttsOn) return;
+        if (!("speechSynthesis" in window)) return;
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        const voices = window.speechSynthesis.getVoices();
+        const ja = voices.find((v) =>
+          (v.lang || "").toLowerCase().startsWith("ja")
+        );
+        if (ja) u.voice = ja;
+        u.lang = "ja-JP";
+        u.rate = 0.95;
+        u.pitch = 1.0;
+        window.speechSynthesis.speak(u);
+      }
+      ttsBtn.onclick = () => {
+        ttsOn = !ttsOn;
+        ttsBtn.textContent = "TTS: " + (ttsOn ? "ON" : "OFF");
+        ttsBtn.classList.toggle("primary", ttsOn);
+      };
+      function bindSpeak() {
+        document.querySelectorAll(".speak").forEach((el) => {
+          el.onclick = () => {
+            const raw = el.textContent.trim().replace(/[。！？]/g, "");
+            speakJP(raw);
+          };
+        });
+      }
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.onvoiceschanged = () => {};
+      }
+
+      /* ---------------- 도메인별 주어 ---------------- */
+      const SUBJECTS = {
+        person: ["(생략)", "私は", "彼は", "彼女は", "友だちは"],
+        thing: ["これは", "このケーキは", "この料理は", "この値段は"],
+        place: ["ここは", "この店は", "この部屋は"],
+      };
+
+      /* ---------------- 단어(도메인 포함) ---------------- */
+      const WORDS = [
+        { type: "noun", stem: "学生", ko: "학생", domain: "person" },
+        { type: "noun", stem: "会社員", ko: "회사원", domain: "person" },
+        { type: "na", stem: "元気", ko: "건강하다", domain: "person" },
+        { type: "na", stem: "便利", ko: "편리하다", domain: "place" },
+        { type: "i", stem: "忙しい", ko: "바쁘다", domain: "person" },
+        { type: "i", stem: "おいしい", ko: "맛있다", domain: "thing" },
+        { type: "i", stem: "高い", ko: "비싸다", domain: "thing" },
+      ];
+
+      /* ---------------- UI 초기화 ---------------- */
+      const wordSel = document.getElementById("word");
+      const subjSel = document.getElementById("subject");
+      const out = document.getElementById("output");
+
+      WORDS.forEach((w, i) => {
+        wordSel.innerHTML += `<option value="${i}">${w.stem} (${w.ko})</option>`;
+      });
+
+      function fillSubjects() {
+        const w = WORDS[parseInt(wordSel.value, 10)];
+        subjSel.innerHTML = "";
+        SUBJECTS[w.domain].forEach((s) => {
+          subjSel.innerHTML += `<option value="${s}">${s}</option>`;
+        });
+        subjSel.value =
+          w.domain === "person" ? "(생략)" : SUBJECTS[w.domain][0];
+      }
+      fillSubjects();
+      wordSel.onchange = () => {
+        fillSubjects();
+        render();
+      };
+      subjSel.onchange = () => render();
+
+      /* ---------------- 보통체 서술어 ---------------- */
+      function plainPredicate(w, t) {
+        if (w.type === "noun" || w.type === "na") {
+          return {
+            presAff: `${w.stem}だ`,
+            presNeg: `${w.stem}じゃない`,
+            pastAff: `${w.stem}だった`,
+            pastNeg: `${w.stem}じゃなかった`,
+          }[t];
+        }
+        // い형용사
+        const s = w.stem.endsWith("い") ? w.stem.slice(0, -1) : w.stem;
+        return {
+          presAff: w.stem,
+          presNeg: `${s}くない`,
+          pastAff: `${s}かった`,
+          pastNeg: `${s}くなかった`,
+        }[t];
+      }
+
+      /* ---------------- 공손체 서술어(丁寧語) ----------------
+   - 명사/な형용사: です / ではありません / でした / ではありませんでした
+   - い형용사: 〜です / 〜くないです / 〜かったです / 〜くなかったです (드릴용 안전형)
+*/
+      function politePredicate(w, t) {
+        if (w.type === "noun" || w.type === "na") {
+          return {
+            presAff: `${w.stem}です`,
+            presNeg: `${w.stem}ではありません`,
+            pastAff: `${w.stem}でした`,
+            pastNeg: `${w.stem}ではありませんでした`,
+          }[t];
+        }
+        const s = w.stem.endsWith("い") ? w.stem.slice(0, -1) : w.stem;
+        return {
+          presAff: `${w.stem}です`,
+          presNeg: `${s}くないです`,
+          pastAff: `${s}かったです`,
+          pastNeg: `${s}くなかったです`,
+        }[t];
+      }
+
+      function jpSentence(subj, pred) {
+        const s = subj === "(생략)" ? "" : subj;
+        return `${s}${pred}。`;
+      }
+
+      /* ---------------- 한국어 ---------------- */
+      function koSubj(s) {
+        return (
+          {
+            "(생략)": "",
+            私は: "나는 ",
+            彼は: "그는 ",
+            彼女は: "그녀는 ",
+            友だちは: "내 친구는 ",
+            これは: "이건 ",
+            このケーキは: "이 케이크는 ",
+            この料理は: "이 요리는 ",
+            この値段は: "이 가격은 ",
+            ここは: "여기는 ",
+            この店は: "이 가게는 ",
+            この部屋は: "이 방은 ",
+          }[s] ?? ""
+        );
+      }
+      function koPred(w, t) {
+        if (w.type === "noun") {
+          return {
+            presAff: `${w.ko}이다`,
+            presNeg: `${w.ko}이 아니다`,
+            pastAff: `${w.ko}였다`,
+            pastNeg: `${w.ko}이 아니었다`,
+          }[t];
+        }
+        if (t === "presAff") return w.ko;
+        if (t === "presNeg") {
+          if (w.ko.endsWith("하다")) return w.ko.replace(/하다$/, "하지 않다");
+          if (w.ko.endsWith("다")) return w.ko.replace(/다$/, "지 않다");
+          return w.ko + " (부정)";
+        }
+        if (t === "pastAff") {
+          if (w.ko.endsWith("하다")) return w.ko.replace(/하다$/, "했다");
+          if (w.ko.endsWith("다")) return w.ko.replace(/다$/, "었다");
+          return w.ko + " (과거)";
+        }
+        if (t === "pastNeg") {
+          if (w.ko.endsWith("하다"))
+            return w.ko.replace(/하다$/, "하지 않았다");
+          if (w.ko.endsWith("다")) return w.ko.replace(/다$/, "지 않았다");
+          return w.ko + " (과거부정)";
+        }
+        return w.ko;
+      }
+      function koSentence(subj, w, t) {
+        return koSubj(subj) + koPred(w, t);
+      }
+
+      /* ---------------- 표현 토글 ---------------- */
+      let showPolite = false;
+      const plainBtn = document.getElementById("plainBtn");
+      const politeBtn = document.getElementById("politeBtn");
+
+      plainBtn.onclick = () => {
+        showPolite = false;
+        plainBtn.classList.add("primary");
+        politeBtn.classList.remove("primary");
+        render();
+      };
+      politeBtn.onclick = () => {
+        showPolite = true;
+        politeBtn.classList.add("primary");
+        plainBtn.classList.remove("primary");
+        render();
+      };
+
+      /* ---------------- 렌더 ---------------- */
+      function render() {
+        const w = WORDS[parseInt(wordSel.value, 10)];
+        const subj = subjSel.value;
+
+        const forms = [
+          { k: "presAff", label: "현재 긍정" },
+          { k: "presNeg", label: "현재 부정" },
+          { k: "pastAff", label: "과거 긍정" },
+          { k: "pastNeg", label: "과거 부정" },
+        ];
+
+        let html = "";
+
+        forms.forEach((f) => {
+          const jpPlain = jpSentence(subj, plainPredicate(w, f.k));
+          const jpPolite = jpSentence(subj, politePredicate(w, f.k));
+          const ko = koSentence(subj, w, f.k);
+
+          // 토글: 보통체만 / (보통체+공손체 같이보기)
+          if (!showPolite) {
+            html += `
+        <div style="margin-bottom:16px">
+          <div class="tag">${f.label}</div>
+          <div class="jp speak">${jpPlain}</div>
+          <div class="ko">한국어: ${ko}</div>
+        </div>
+      `;
+          } else {
+            html += `
+        <div style="margin-bottom:16px">
+          <div class="tag">${f.label}</div>
+          <div class="split">
+            <div class="box">
+              <div class="label">보통체(훈련)</div>
+              <div class="jp speak">${jpPlain}</div>
+            </div>
+            <div class="box">
+              <div class="label">공손체(같이보기)</div>
+              <div class="jp speak">${jpPolite}</div>
+            </div>
+          </div>
+          <div class="ko">한국어: ${ko}</div>
+        </div>
+      `;
+          }
+        });
+
+        // 질문/부정질문은 “설명만”
+        const qPlain = jpSentence(subj, plainPredicate(w, "presAff")).replace(
+          "。",
+          "？"
+        );
+        const negqPlain = jpSentence(
+          subj,
+          plainPredicate(w, "presNeg")
+        ).replace("。", "？");
+
+        const qPolite = jpSentence(subj, politePredicate(w, "presAff")).replace(
+          "。",
+          "？"
+        );
+        const negqPolite = jpSentence(
+          subj,
+          politePredicate(w, "presNeg")
+        ).replace("。", "？");
+
+        if (!showPolite) {
+          html += `
+      <div class="small" style="margin-top:10px">
+        <b>질문(설명용)</b><br>
+        • 의문: <code>${qPlain}</code> (끝 억양 올리기)<br>
+        • 부정질문: <code>${negqPlain}</code> (현재부정 + ？)
+      </div>
+    `;
+        } else {
+          html += `
+      <div class="small" style="margin-top:10px">
+        <b>질문(설명용)</b><br>
+        • 의문: <code>${qPlain}</code> / 공손체: <code>${qPolite}</code><br>
+        • 부정질문: <code>${negqPlain}</code> / 공손체: <code>${negqPolite}</code>
+      </div>
+    `;
+        }
+
+        out.innerHTML = html;
+        bindSpeak();
+      }
+
+      document.getElementById("gen").onclick = render;
+      render();
+    </script>
+  </body>
+</html>
