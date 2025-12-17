@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Day1 – カタカナ ア・カ行 (전용) / 20단어 + 예문 + 발음</title>
+    <style>
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        line-height: 1.6;
+        padding: 24px;
+        max-width: 900px;
+        margin: 0 auto;
+        background: #fafafa;
+        color: #222;
+      }
+      h1 {
+        font-size: 1.8rem;
+        margin-bottom: 0.5em;
+      }
+      h2 {
+        font-size: 1.4rem;
+        margin-top: 1.6em;
+        margin-bottom: 0.6em;
+        border-left: 4px solid #4dabf7;
+        padding-left: 8px;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-top: 10px;
+      }
+      th,
+      td {
+        border: 1px solid #ccc;
+        padding: 6px;
+        text-align: center;
+        font-size: 0.95rem;
+        vertical-align: middle;
+      }
+      th {
+        background: #f1f3f5;
+      }
+      .speak-btn {
+        background: #4dabf7;
+        color: white;
+        border: none;
+        padding: 3px 7px;
+        border-radius: 5px;
+        font-size: 0.8rem;
+        cursor: pointer;
+        margin-left: 4px;
+      }
+      .speak-btn:hover {
+        background: #339af0;
+      }
+      .kana-cell .jp {
+        font-size: 1.2rem;
+        font-weight: 700;
+        display: block;
+      }
+      .kana-cell .romaji {
+        font-size: 0.8rem;
+        color: #555;
+        display: block;
+        margin-top: 2px;
+      }
+      .word-jp {
+        font-size: 1.05rem;
+        font-weight: 700;
+        display: block;
+      }
+      .word-romaji {
+        font-size: 0.8rem;
+        color: #555;
+        display: block;
+        margin-top: 1px;
+      }
+      .small {
+        font-size: 0.85rem;
+        color: #666;
+      }
+      .section {
+        background: #fff;
+        border-radius: 12px;
+        padding: 16px 18px;
+        margin-bottom: 18px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+      }
+      .example {
+        margin-bottom: 8px;
+        padding: 8px 10px;
+        border-radius: 8px;
+        background: #f8f9fa;
+      }
+      .example-line {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      .example-jp {
+        font-size: 1.05rem;
+        font-weight: 700;
+      }
+      .example-romaji {
+        font-size: 0.85rem;
+        color: #555;
+      }
+      .example-kr {
+        font-size: 0.85rem;
+        color: #444;
+        margin-top: 3px;
+      }
+    </style>
+
+    <script>
+      let japaneseVoice = null;
+
+      function loadJapaneseVoice() {
+        const voices = speechSynthesis.getVoices();
+
+        // 일본어 음성 우선 선택 (가능하면 여성/Google 우선)
+        japaneseVoice =
+          voices.find(
+            (v) =>
+              v.lang && v.lang.includes("ja") && /female|woman|女/i.test(v.name)
+          ) ||
+          voices.find(
+            (v) => v.lang && v.lang.includes("ja") && v.name.includes("Google")
+          ) ||
+          voices.find((v) => v.lang && v.lang.includes("ja"));
+      }
+
+      window.speechSynthesis.onvoiceschanged = loadJapaneseVoice;
+      window.addEventListener("load", loadJapaneseVoice);
+
+      function speak(text) {
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = "ja-JP";
+        utter.voice = japaneseVoice;
+        utter.rate = 0.65; // 느리게, 또렷하게
+        utter.pitch = 1.25;
+        speechSynthesis.cancel(); // 겹치지 않게
+        speechSynthesis.speak(utter);
+      }
+    </script>
+  </head>
+
+  <body>
+    <h1>DAY 1 – カタカナ ア行・カ行 (전용) / 20단어 + 예문 + 발음</h1>
+    <p class="small">
+      👉 오늘은 <b>ア行</b>과 <b>カ行</b>을 중심으로<br />
+      각 글자·단어를 <b>카타카나 + 로마자(읽기) + 한국어 뜻 + 음성</b>으로
+      동시에 익히는 구성입니다.
+      <br />
+      (참고: 단어/예문에는 학습 편의상 다른 글자도 일부 포함될 수 있어요.)
+    </p>
+
+    <div class="section">
+      <h2>1. 카타카나 기본 (ア行・カ行) – 읽기 포함</h2>
+      <table>
+        <tr>
+          <th>행</th>
+          <th>1</th>
+          <th>2</th>
+          <th>3</th>
+          <th>4</th>
+          <th>5</th>
+        </tr>
+
+        <tr>
+          <th>ア행</th>
+          <td class="kana-cell">
+            <span class="jp">ア</span><span class="romaji">a</span
+            ><button class="speak-btn" onclick="speak('ア')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">イ</span><span class="romaji">i</span
+            ><button class="speak-btn" onclick="speak('イ')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">ウ</span><span class="romaji">u</span
+            ><button class="speak-btn" onclick="speak('ウ')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">エ</span><span class="romaji">e</span
+            ><button class="speak-btn" onclick="speak('エ')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">オ</span><span class="romaji">o</span
+            ><button class="speak-btn" onclick="speak('オ')">▶</button>
+          </td>
+        </tr>
+
+        <tr>
+          <th>カ행</th>
+          <td class="kana-cell">
+            <span class="jp">カ</span><span class="romaji">ka</span
+            ><button class="speak-btn" onclick="speak('カ')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">キ</span><span class="romaji">ki</span
+            ><button class="speak-btn" onclick="speak('キ')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">ク</span><span class="romaji">ku</span
+            ><button class="speak-btn" onclick="speak('ク')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">ケ</span><span class="romaji">ke</span
+            ><button class="speak-btn" onclick="speak('ケ')">▶</button>
+          </td>
+          <td class="kana-cell">
+            <span class="jp">コ</span><span class="romaji">ko</span
+            ><button class="speak-btn" onclick="speak('コ')">▶</button>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>2. Day1 단어 발음 (총 20개)</h2>
+      <table>
+        <tr>
+          <th>카타카나 + 읽기</th>
+          <th>뜻 (한국어)</th>
+          <th>듣기</th>
+        </tr>
+
+        <tr>
+          <td>
+            <span class="word-jp">アカ</span
+            ><span class="word-romaji">aka</span>
+          </td>
+          <td>빨강</td>
+          <td><button class="speak-btn" onclick="speak('アカ')">▶</button></td>
+        </tr>
+        <tr>
+          <td>
+            <span class="word-jp">アオ</span><span class="word-romaji">ao</span>
+          </td>
+          <td>파랑</td>
+          <td><button class="speak-btn" onclick="speak('アオ')">▶</button></td>
+        </tr>
+        <tr>
+          <td>
+            <span class="word-jp">アイ</span><span class="word-romaji">ai</span>
+          </td>
+          <td>사랑</td>
+          <td><button class="speak-btn" onclick="speak('アイ')">▶</button></td>
+        </tr>
+        <tr>
+          <td>
+            <span class="word-jp">イカ</span
+            ><span class="word-romaji">ika</span>
+          </td>
+          <td>오징어</td>
+          <td><button class="speak-btn" onclick="speak('イカ')">▶</button></td>
+        </tr>
+        <tr>
+          <td>
+            <span class="word-jp">イエ</span><span class="word-romaji">ie</span>
+          </td>
+          <td>집</td>
+          <td><button class="speak-btn" onclick="speak('イエ')">▶</button></td>
+        </tr>
+        <tr>
+          <td>
+            <span class="word-jp">ウエ</span><span class="word-romaji">ue</span>
+          </td>
+          <td>위(위쪽)</td>
+          <td><button class="speak-btn" onclick="speak('ウエ')">▶</button></td>
+        </tr>
+        <tr>
+          <td>
+            <span class="word-jp">ウオ</span><span class="word-romaji">uo</span>
+          </td>
+          <td>물고기(문어적/고어)</td>
+          <td><button class="speak-btn" onclick="speak('ウオ')">▶</button></td>
+        </tr>
+        <tr>
+          <td>
+            <span class="word-jp">エキ</span
+            ><span class="word-romaji">eki</span>
+          </td>
+          <td>역(기차역)</td>
+          <td><button class="speak-btn" onclick="speak('エキ')">▶</button></td>
+        </tr>
+        <tr>
+          <td>
+            <span class="word-jp">エア</span><span class="word-romaji">ea</span>
+          </td>
+          <td>공기(에어)</td>
+          <td><button class="speak-btn" onclick="speak('エア')">▶</button></td>
+        </tr>
+        <tr>
+          <td>
+            <span class="word-jp">オカ</span
+            ><span class="word-romaji">oka</span>
+          </td>
+          <td>언덕</td>
+          <td><button class="speak-btn" onclick="speak('オカ')">▶</button></td>
+        </tr>
+        <tr>
+          <td>
+            <span class="word-jp">オイ</span><span class="word-romaji">oi</span>
+          </td>
+          <td>조카/젊은 남자(문맥에 따라)</td>
+          <td><button class="speak-btn" onclick="speak('オイ')">▶</button></td>
+        </tr>
+        <tr>
+          <td>
+            <span class="word-jp">カキ</span
+            ><span class="word-romaji">kaki</span>
+          </td>
+          <td>굴/감(문맥에 따라)</td>
+          <td><button class="speak-btn" onclick="speak('カキ')">▶</button></td>
+        </tr>
+        <tr>
+          <td>
+            <span class="word-jp">カコ</span
+            ><span class="word-romaji">kako</span>
+          </td>
+          <td>과거</td>
+          <td><button class="speak-btn" onclick="speak('カコ')">▶</button></td>
+        </tr>
+        <tr>
+          <td>
+            <span class="word-jp">カケ</span
+            ><span class="word-romaji">kake</span>
+          </td>
+          <td>걸기/결손(문맥에 따라)</td>
+          <td><button class="speak-btn" onclick="speak('カケ')">▶</button></td>
+        </tr>
+        <tr>
+          <td>
+            <span class="word-jp">カオ</span
+            ><span class="word-romaji">kao</span>
+          </td>
+          <td>얼굴</td>
+          <td><button class="speak-btn" onclick="speak('カオ')">▶</button></td>
+        </tr>
+        <tr>
+          <td>
+            <span class="word-jp">キク</span
+            ><span class="word-romaji">kiku</span>
+          </td>
+          <td>국화/듣다(동음)</td>
+          <td><button class="speak-btn" onclick="speak('キク')">▶</button></td>
+        </tr>
+        <tr>
+          <td>
+            <span class="word-jp">キオク</span
+            ><span class="word-romaji">kioku</span>
+          </td>
+          <td>기억</td>
+          <td>
+            <button class="speak-btn" onclick="speak('キオク')">▶</button>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <span class="word-jp">クウ</span
+            ><span class="word-romaji">kuu</span>
+          </td>
+          <td>먹다(구어)</td>
+          <td><button class="speak-btn" onclick="speak('クウ')">▶</button></td>
+        </tr>
+        <tr>
+          <td>
+            <span class="word-jp">ケア</span
+            ><span class="word-romaji">kea</span>
+          </td>
+          <td>케어, 돌봄</td>
+          <td><button class="speak-btn" onclick="speak('ケア')">▶</button></td>
+        </tr>
+        <tr>
+          <td>
+            <span class="word-jp">コイ</span
+            ><span class="word-romaji">koi</span>
+          </td>
+          <td>잉어/사랑(동음)</td>
+          <td><button class="speak-btn" onclick="speak('コイ')">▶</button></td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>3. 오늘의 예문 (읽기 + 발음)</h2>
+
+      <div class="example">
+        <div class="example-line">
+          <span class="example-jp">アカ オカ</span>
+          <span class="example-romaji">(aka oka)</span>
+          <button class="speak-btn" onclick="speak('アカ オカ')">▶</button>
+        </div>
+        <div class="example-kr">빨간 언덕</div>
+      </div>
+
+      <div class="example">
+        <div class="example-line">
+          <span class="example-jp">イケ コイ</span>
+          <span class="example-romaji">(ike koi)</span>
+          <button class="speak-btn" onclick="speak('イケ コイ')">▶</button>
+        </div>
+        <div class="example-kr">연못의 잉어</div>
+      </div>
+
+      <div class="example">
+        <div class="example-line">
+          <span class="example-jp">カコ アキ</span>
+          <span class="example-romaji">(kako aki)</span>
+          <button class="speak-btn" onclick="speak('カコ アキ')">▶</button>
+        </div>
+        <div class="example-kr">과거의 가을</div>
+      </div>
+    </div>
+  </body>
+</html>
